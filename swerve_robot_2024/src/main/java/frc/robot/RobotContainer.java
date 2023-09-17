@@ -42,7 +42,6 @@ public class RobotContainer {
   new CommandXboxController(OperatorConstants.kDriverControllerPort);
   
 
-  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     
