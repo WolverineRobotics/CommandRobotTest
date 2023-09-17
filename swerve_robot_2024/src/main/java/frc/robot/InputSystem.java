@@ -20,16 +20,16 @@ public class InputSystem {
     } 
 
     public static boolean FaceForward(){
-        return dController.getYButtonPressed();
+        return dController.getYButton();
     } 
     public static boolean FaceDriver(){
-        return dController.getAButtonPressed();
+        return dController.getAButton();
     } 
     public static boolean FaceRight(){
-        return dController.getBButtonPressed();
+        return dController.getBButton();
     } 
     public static boolean FaceLeft(){
-        return dController.getXButtonPressed();
+        return dController.getXButton();
     } 
 
     public static XboxController Driver(){

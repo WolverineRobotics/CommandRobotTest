@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.Drive.DefaultDriveCommand;
+import frc.robot.commands.Drive.RotateToCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,6 +29,9 @@ public class RobotContainer {
    
   private DriveSubsystem m_drive = new DriveSubsystem();
   private Command m_driveCommand = new DefaultDriveCommand(m_drive);
+  private RotateToCommand m_turnCommand;
+
+  private boolean isTurning = false;
   
   //private DriveSubsystem m_drive = new DriveSubsystem();
   //private Command m_driveCommand = new DefaultDriveCommand(m_drive);
@@ -51,8 +55,22 @@ public class RobotContainer {
     
   }
 
-  public void TestFaceDirection(){
+  public void TestFaceDirection(double direction){
+    if(isTurning){
+      return;
+    }
+    else{
+      m_turnCommand = new RotateToCommand(m_drive, direction);
+      m_turnCommand.schedule();
+    }
     
+  }
+
+  public void NoTurnInput(){
+    if(isTurning){
+      m_turnCommand.EndCall();
+      isTurning = false;
+    }
   }
 
   public Command getAutonomousCommand() {
