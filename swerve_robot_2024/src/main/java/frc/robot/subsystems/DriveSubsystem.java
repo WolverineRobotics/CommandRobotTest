@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.InputSystem;
+import frc.robot.InputSystem;
 import frc.robot.Robot;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -57,10 +57,24 @@ public class DriveSubsystem extends SubsystemBase {
     return false;
   }
 
+
+
+  // Drive Methods
+  public void ArcadeDrive(){
+    drive.arcadeDrive(InputSystem.DriveSpeed(), InputSystem.DriveRot());
+  }
+  public void Rotate(double speed){
+    drive.arcadeDrive(0, speed);
+  }
+
+  public void MoveStraight(double speed){
+    drive.arcadeDrive(speed, 0);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    drive.arcadeDrive(InputSystem.DriveSpeed(), InputSystem.DriveRot());
+    
   }
 
   @Override
