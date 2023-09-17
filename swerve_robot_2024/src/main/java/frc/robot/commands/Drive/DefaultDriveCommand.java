@@ -12,8 +12,6 @@ public class DefaultDriveCommand extends CommandBase {
         addRequirements(subsystem);
     }
 
-    
-
     @Override
     public void initialize() {}
     
@@ -31,7 +29,4 @@ public class DefaultDriveCommand extends CommandBase {
     public boolean isFinished() {
       return false;
     }
-
-
-    
 }
