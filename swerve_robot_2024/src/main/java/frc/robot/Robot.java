@@ -121,6 +121,9 @@ public class Robot extends TimedRobot {
       m_robotContainer.NoTurnInput();
     }
 
+
+    m_robotContainer.Balance(InputSystem.Balance());
+
   }
 
   @Override
