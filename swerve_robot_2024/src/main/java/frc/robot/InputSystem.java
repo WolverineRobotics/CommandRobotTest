@@ -33,7 +33,7 @@ public class InputSystem {
     } 
     
     public static boolean Balance(){
-        return dController.getLeftBumper();
+        return dController.getRightBumper();
     } 
 
     public static XboxController Driver(){
