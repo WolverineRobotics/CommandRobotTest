@@ -87,7 +87,43 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    // If the bind is pressed that the user wants to face forward
+    if(InputSystem.FaceForward()){
+      m_robotContainer.TestFaceDirection(0);
+    }
+    // If the bind is pressed that the user wants to face backwards
+    else if(InputSystem.FaceDriver()){
+      m_robotContainer.TestFaceDirection(180);
+    }
     
+    // If the bind is pressed that the user wants to face left
+    else if(InputSystem.FaceLeft()){
+      
+      // finds wether clockwise or counter clockwise will work
+      if(Math.abs(90 - m_robotContainer.GetDrive().Yaw()) <= Math.abs(-270 - m_robotContainer.GetDrive().Yaw())){
+        m_robotContainer.TestFaceDirection(90);
+      }
+      else{ m_robotContainer.TestFaceDirection(-270); }
+    }
+    
+    // If the bind is pressed that the user wants to face right
+    else if(InputSystem.FaceRight()){
+      
+      // finds wether clockwise or counter clockwise will work
+      if(Math.abs(270 - m_robotContainer.GetDrive().Yaw()) <= Math.abs(-90 - m_robotContainer.GetDrive().Yaw())){
+          m_robotContainer.TestFaceDirection(270);
+         }
+        else{ m_robotContainer.TestFaceDirection(-90); }
+    }
+
+    // When none of these requests are pressed
+    else{
+      m_robotContainer.NoTurnInput();
+    }
+
+
+    m_robotContainer.Balance(InputSystem.Balance());
+
   }
 
   @Override

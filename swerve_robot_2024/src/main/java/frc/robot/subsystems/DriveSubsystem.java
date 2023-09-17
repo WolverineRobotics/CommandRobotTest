@@ -7,10 +7,15 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.InputSystem;
 import frc.robot.Robot;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -20,11 +25,11 @@ public class DriveSubsystem extends SubsystemBase {
     // Variables
 
     // Declaring drive motors
-    private final CANSparkMax left_1 = new CANSparkMax(0, MotorType.kBrushless);
-    private final CANSparkMax left_2 = new CANSparkMax(0, MotorType.kBrushless);
+    private final CANSparkMax left_1 = new CANSparkMax(Constants.OperatorConstants.kLeftMotor1, MotorType.kBrushless);
+    private final CANSparkMax left_2 = new CANSparkMax(Constants.OperatorConstants.kLeftMotor2, MotorType.kBrushless);
     
-    private final CANSparkMax right_1 = new CANSparkMax(0, MotorType.kBrushless);
-    private final CANSparkMax right_2 = new CANSparkMax(0, MotorType.kBrushless);
+    private final CANSparkMax right_1 = new CANSparkMax(Constants.OperatorConstants.kRightMotor1, MotorType.kBrushless);
+    private final CANSparkMax right_2 = new CANSparkMax(Constants.OperatorConstants.kRightMotor2, MotorType.kBrushless);
     
     // Declaring motor groups
     private final MotorControllerGroup left_drive = new MotorControllerGroup(left_1, left_2);
@@ -32,18 +37,27 @@ public class DriveSubsystem extends SubsystemBase {
     
     // Declaring differential drive
     private final DifferentialDrive drive = new DifferentialDrive(left_drive, right_drive);  
+    
+    // Declaring Accelerometer UwU
+    private final Accelerometer accelerometer = new BuiltInAccelerometer();
 
     // The Pigeon
-    private final PigeonIMU pigeon = new PigeonIMU(0);
+    private final PigeonIMU pigeon = new PigeonIMU(Constants.OperatorConstants.kPigeonId);
+    private double[] position = new double[3];
+    private double[] velocity = new double[3];
+    //private double proper_yaw = 0;
 
   /** Creates a new ExampleSubsystem. */
-  public DriveSubsystem() {}
+  public DriveSubsystem() {
+    pigeon.setYaw(0);
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
+    position[0] = 0;
+    position[1] = 0;
+    position[2] = 0;
+
+    //proper_yaw = pigeon.getYaw();
+  }
+
   public CommandBase DriveMethodCommand() {
     return runOnce(
         () -> {
@@ -52,20 +66,53 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   // Drive Methods
+
+  // Manual default driving mode
   public void ArcadeDrive(){
     drive.arcadeDrive(InputSystem.DriveSpeed(), InputSystem.DriveRot());
   }
+
+  // Rotates the robot at the speed given
   public void Rotate(double speed){
     drive.arcadeDrive(0, speed);
   }
-
+  
+  // moves the robot staight with the given speed
   public void MoveStraight(double speed){
     drive.arcadeDrive(speed, 0);
+  }
+
+  // moves the robot staight with the given speed
+  public void SetDrive(double speed, double rot){
+    drive.arcadeDrive(speed, rot);
+  }
+
+  public double Yaw(){
+    return pigeon.getYaw();
+  }
+
+  public double Pitch(){
+    return pigeon.getPitch();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    // Updates Robot Position and velocity
+    velocity[0] = accelerometer.getX();
+    velocity[1] = accelerometer.getY();
+    velocity[2] = accelerometer.getZ();
+
+    position[0] += accelerometer.getX();
+    position[1] += accelerometer.getY();
+    position[2] += accelerometer.getZ();
+
+    SmartDashboard.putNumberArray("Position", position);
+    SmartDashboard.putNumberArray("Velocity", velocity);
+    SmartDashboard.putNumber("Yaw", pigeon.getYaw());
+    SmartDashboard.putNumber("Pitch", pigeon.getPitch());
+    SmartDashboard.putNumber("Roll", pigeon.getRoll());
     
   }
 
