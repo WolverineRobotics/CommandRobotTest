@@ -26,7 +26,7 @@ public class AutoBalance extends CommandBase{
 
     @Override
     public void execute(){
-        double angle = m_subsystem.Yaw() + offset;
+        double angle = m_subsystem.Pitch() + offset;
 
         if(angle > balanced_range){ m_subsystem.MoveStraight(-speed); }
         else if(angle < -balanced_range){ m_subsystem.MoveStraight(speed); }

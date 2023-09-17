@@ -7,8 +7,12 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -33,14 +37,24 @@ public class DriveSubsystem extends SubsystemBase {
     
     // Declaring differential drive
     private final DifferentialDrive drive = new DifferentialDrive(left_drive, right_drive);  
+    
+    // Declaring Accelerometer UwU
+    private final Accelerometer accelerometer = new BuiltInAccelerometer();
 
     // The Pigeon
     private final PigeonIMU pigeon = new PigeonIMU(Constants.OperatorConstants.kPigeonId);
+    private double[] position = new double[3];
+    private double[] velocity = new double[3];
     //private double proper_yaw = 0;
 
   /** Creates a new ExampleSubsystem. */
   public DriveSubsystem() {
     pigeon.setYaw(0);
+
+    position[0] = 0;
+    position[1] = 0;
+    position[2] = 0;
+
     //proper_yaw = pigeon.getYaw();
   }
 
@@ -77,10 +91,28 @@ public class DriveSubsystem extends SubsystemBase {
     return pigeon.getYaw();
   }
 
+  public double Pitch(){
+    return pigeon.getPitch();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
+
+    // Updates Robot Position and velocity
+    velocity[0] = accelerometer.getX();
+    velocity[1] = accelerometer.getY();
+    velocity[2] = accelerometer.getZ();
+
+    position[0] += accelerometer.getX();
+    position[1] += accelerometer.getY();
+    position[2] += accelerometer.getZ();
+
+    SmartDashboard.putNumberArray("Position", position);
+    SmartDashboard.putNumberArray("Velocity", velocity);
+    SmartDashboard.putNumber("Yaw", pigeon.getYaw());
+    SmartDashboard.putNumber("Pitch", pigeon.getPitch());
+    SmartDashboard.putNumber("Roll", pigeon.getRoll());
   }
 
   @Override
