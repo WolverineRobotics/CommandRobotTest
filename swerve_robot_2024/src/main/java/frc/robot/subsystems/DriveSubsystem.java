@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InputSystem;
 import frc.robot.Robot;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -31,6 +32,9 @@ public class DriveSubsystem extends SubsystemBase {
     
     // Declaring differential drive
     private final DifferentialDrive drive = new DifferentialDrive(left_drive, right_drive);  
+
+    // The Pigeon
+    private final PigeonIMU pigeon = new PigeonIMU(0);
 
   /** Creates a new ExampleSubsystem. */
   public DriveSubsystem() {}
