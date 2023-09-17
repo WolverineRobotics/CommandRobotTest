@@ -79,7 +79,8 @@ public class RobotContainer {
 
   public void NoTurnInput(){
     if(isTurning){
-      m_turnCommand.EndCall();
+      //m_turnCommand.EndCall();
+      m_turnCommand.cancel();
       isTurning = false;
     }
   }
@@ -87,7 +88,8 @@ public class RobotContainer {
   public void Balance(boolean _balance){
     if(isBalancing){
       if(!_balance){
-        m_balanceCommand.EndCall();
+        //m_balanceCommand.EndCall();
+        m_balanceCommand.cancel();
         isBalancing = false;
       }
       return;
