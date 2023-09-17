@@ -18,4 +18,21 @@ public class InputSystem {
     public static double DriveRot(){
         return dController.getRightX();
     } 
+
+    public static boolean FaceForward(){
+        return dController.getYButtonPressed();
+    } 
+    public static boolean FaceDriver(){
+        return dController.getAButtonPressed();
+    } 
+    public static boolean FaceRight(){
+        return dController.getBButtonPressed();
+    } 
+    public static boolean FaceLeft(){
+        return dController.getXButtonPressed();
+    } 
+
+    public static XboxController Driver(){
+        return dController;
+    } 
 }
