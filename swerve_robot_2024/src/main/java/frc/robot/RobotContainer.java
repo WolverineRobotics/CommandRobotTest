@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Drive.AutoBalance;
 import frc.robot.commands.Drive.DefaultDriveCommand;
 import frc.robot.commands.Drive.RotateToCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -30,8 +31,10 @@ public class RobotContainer {
   private DriveSubsystem m_drive = new DriveSubsystem();
   private Command m_driveCommand = new DefaultDriveCommand(m_drive);
   private RotateToCommand m_turnCommand;
+  private AutoBalance m_balanceCommand;
 
   private boolean isTurning = false;
+  private boolean isBalancing = false;
   
   //private DriveSubsystem m_drive = new DriveSubsystem();
   //private Command m_driveCommand = new DefaultDriveCommand(m_drive);
@@ -70,6 +73,20 @@ public class RobotContainer {
     if(isTurning){
       m_turnCommand.EndCall();
       isTurning = false;
+    }
+  }
+
+  public void Balance(boolean _balance){
+    if(isBalancing){
+      if(!_balance){
+        m_balanceCommand.EndCall();
+        isBalancing = false;
+      }
+      return;
+    }
+    else if(_balance){
+      m_balanceCommand = new AutoBalance(m_drive);
+      m_balanceCommand.schedule();
     }
   }
 

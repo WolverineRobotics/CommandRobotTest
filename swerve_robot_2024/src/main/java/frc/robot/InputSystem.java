@@ -31,6 +31,10 @@ public class InputSystem {
     public static boolean FaceLeft(){
         return dController.getXButton();
     } 
+    
+    public static boolean Balance(){
+        return dController.getLeftBumper();
+    } 
 
     public static XboxController Driver(){
         return dController;
