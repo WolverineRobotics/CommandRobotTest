@@ -6,8 +6,9 @@ import frc.robot.subsystems.DriveSubsystem;
 public class RotateToCommand extends CommandBase {
 
     private final DriveSubsystem m_Subsystem;
+    private double target_angle;
 
-    public RotateToCommand(DriveSubsystem subsystem){
+    public RotateToCommand(DriveSubsystem subsystem, double angle){
         m_Subsystem = subsystem;
         addRequirements(subsystem);
     }
@@ -19,7 +20,7 @@ public class RotateToCommand extends CommandBase {
     
     @Override
     public void execute() {
-        m_Subsystem.ArcadeDrive();
+        //m_Subsystem;
     }
 
     // Called once the command ends or is interrupted.
