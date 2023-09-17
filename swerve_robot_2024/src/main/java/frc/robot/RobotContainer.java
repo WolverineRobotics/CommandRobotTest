@@ -12,6 +12,7 @@ import frc.robot.commands.Drive.DefaultDriveCommand;
 import frc.robot.commands.Drive.RotateToCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -36,6 +37,9 @@ public class RobotContainer {
   private boolean isTurning = false;
   private boolean isBalancing = false;
   
+  private double side = SmartDashboard.getNumber("Side", 0); // 0 for blue, 1 for red
+  private double start_pos= SmartDashboard.getNumber("StartingPos", 0); // 0: leftmost, 1: center, 2: rightmost
+
   //private DriveSubsystem m_drive = new DriveSubsystem();
   //private Command m_driveCommand = new DefaultDriveCommand(m_drive);
   
@@ -54,8 +58,12 @@ public class RobotContainer {
     
     m_drive = new DriveSubsystem();
     m_driveCommand = new DefaultDriveCommand(m_drive);
-    CommandScheduler.getInstance().setDefaultCommand(m_drive, m_driveCommand);
-    
+    CommandScheduler.getInstance().setDefaultCommand(m_drive, m_driveCommand);    
+  }
+
+  public void UpdateConfig(){
+    side = SmartDashboard.getNumber("Side", 0); // 0 for blue, 1 for red
+    start_pos= SmartDashboard.getNumber("StartingPos", 0); // 0: leftmost, 1: center, 2: rightmost
   }
 
   public void TestFaceDirection(double direction){
