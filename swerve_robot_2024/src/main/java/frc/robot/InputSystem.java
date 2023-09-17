@@ -18,8 +18,4 @@ public class InputSystem {
     public static double DriveRot(){
         return dController.getRightX();
     } 
-
-
-    
-
 }
