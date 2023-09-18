@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.driving.AutoCommand; 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -62,11 +61,11 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-    auto = m_robotContainer.getAutonomousCommand();
-
-    if (auto != null) {
-      auto.schedule();
-    }
+    //auto = m_robotContainer.getAutonomousCommand();
+//
+    //if (auto != null) {
+    //  auto.schedule();
+    //}
   }
 
   /** This function is called periodically during autonomous. */

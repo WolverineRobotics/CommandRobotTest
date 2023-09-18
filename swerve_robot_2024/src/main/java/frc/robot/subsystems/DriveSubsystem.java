@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.InputSystem;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
+
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -26,11 +28,11 @@ public class DriveSubsystem extends SubsystemBase {
     // Variables
 
     // Declaring drive motors
-    private final CANSparkMax left_1 = new CANSparkMax(Constants.OperatorConstants.kLeftMotor1, MotorType.kBrushless);
-    private final CANSparkMax left_2 = new CANSparkMax(Constants.OperatorConstants.kLeftMotor2, MotorType.kBrushless);
+    private final CANSparkMax left_1 = new CANSparkMax(RobotMap.LEFT_MOTOR_1, MotorType.kBrushless);
+    private final CANSparkMax left_2 = new CANSparkMax(RobotMap.LEFT_MOTOR_2, MotorType.kBrushless);
     
-    private final CANSparkMax right_1 = new CANSparkMax(Constants.OperatorConstants.kRightMotor1, MotorType.kBrushless);
-    private final CANSparkMax right_2 = new CANSparkMax(Constants.OperatorConstants.kRightMotor2, MotorType.kBrushless);
+    private final CANSparkMax right_1 = new CANSparkMax(RobotMap.RIGHT_MOTOR_1, MotorType.kBrushless);
+    private final CANSparkMax right_2 = new CANSparkMax(RobotMap.RIGHT_MOTOR_2, MotorType.kBrushless);
 
     // Declaring Motor Encoders & Total Distance 
     private final Encoder leftEncoder_1 = new Encoder(5, 6);

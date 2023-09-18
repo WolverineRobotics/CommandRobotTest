@@ -1,31 +1,32 @@
 
-package.robot.frc.commands;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 
 public class AutonomousCommand extends CommandBase {
 
     DriveSubsystem weBalling;
-    public AutoCommand(weBalling subsystem){
+    public AutonomousCommand(DriveSubsystem subsystem){
         weBalling = subsystem; // Initalize 'weBalling as a subsystem'
         addRequirements(weBalling); // Subsystem Dependency
 
-        timer = new Timer(); 
+        //Timer timer = new Timer(); 
     }
     
     // Command for Driving 
-    @Override
-    public void intitialize(){
-        Timer.reset();
-        Timer.start();
-    }
+    //@Override
+    //public void intitialize(){
+    //    Timer.reset();
+    //    Timer.start();
+    //}
 
     @Override
     public void execute(){
-        weBalling.DifferentialDrive(.5, 0); // Half speed, drive straight
+    //    weBalling.DifferentialDrive(.5, 0); // Half speed, drive straight
     }
 
     // Initialized when command stops
@@ -36,6 +37,7 @@ public class AutonomousCommand extends CommandBase {
     // Will return true if finished
     @Override
     public boolean isFinished() { 
-        return timer.get() > 2;
+    //    return timer.get() > 2;
+        return false;
     }
 }

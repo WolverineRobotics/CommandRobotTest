@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.driving.AutoCommand;
+import frc.robot.commands.AutonomousCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.Drive.AutoBalance;
 import frc.robot.commands.Drive.DefaultDriveCommand;
@@ -41,7 +41,7 @@ public class RobotContainer {
   private double side = SmartDashboard.getNumber("Side", 0); // 0 for blue, 1 for red
   private double start_pos= SmartDashboard.getNumber("StartingPos", 0); // 0: leftmost, 1: center, 2: rightmost
 
-  private AutoCommand autoWeBall = new AutoCommand(weBalling);
+  //private AutoCommand autoWeBall = new AutoCommand(weBalling);
   
   public DriveSubsystem GetDrive(){ 
     return m_drive;
@@ -99,8 +99,8 @@ public class RobotContainer {
     }
   }
 
-  public Command getAutonomousCommand() {
-    // WE BALL
-    return autoWeBall;
-  }
+  //public Command getAutonomousCommand() {
+  //  // WE BALL
+  //  return autoWeBall;
+  //}
 }
