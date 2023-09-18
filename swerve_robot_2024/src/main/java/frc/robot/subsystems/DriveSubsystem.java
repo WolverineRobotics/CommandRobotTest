@@ -24,12 +24,14 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Variables
 
-    // Declaring drive motors
+    // Declaring drive motors (For tank drive)
     private final CANSparkMax left_1 = new CANSparkMax(Constants.OperatorConstants.kLeftMotor1, MotorType.kBrushless);
     private final CANSparkMax left_2 = new CANSparkMax(Constants.OperatorConstants.kLeftMotor2, MotorType.kBrushless);
     
     private final CANSparkMax right_1 = new CANSparkMax(Constants.OperatorConstants.kRightMotor1, MotorType.kBrushless);
     private final CANSparkMax right_2 = new CANSparkMax(Constants.OperatorConstants.kRightMotor2, MotorType.kBrushless);
+
+    
     
     // Declaring motor groups
     private final MotorControllerGroup left_drive = new MotorControllerGroup(left_1, left_2);
