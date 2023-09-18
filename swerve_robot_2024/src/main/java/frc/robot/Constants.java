@@ -29,6 +29,6 @@ public final class Constants {
     public static final int kLeftMotorEncoder_B = 6;
 
     public static final int kRightMotorEncoder_A = 7; 
-    public static final int kRightMotorEncoder_b = 8;
+    public static final int kRightMotorEncoder_B = 8;
   }
 }
