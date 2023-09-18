@@ -19,6 +19,7 @@ import frc.robot.Constants;
 import frc.robot.InputSystem;
 import frc.robot.Robot;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import edu.wpi.first.wpilibj.Encoder;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -30,6 +31,10 @@ public class DriveSubsystem extends SubsystemBase {
     
     private final CANSparkMax right_1 = new CANSparkMax(Constants.OperatorConstants.kRightMotor1, MotorType.kBrushless);
     private final CANSparkMax right_2 = new CANSparkMax(Constants.OperatorConstants.kRightMotor2, MotorType.kBrushless);
+
+    // Declaring Motor Encoders & Total Distance 
+    private final Encoder leftEncoder_1 = new Encoder(5, 6);
+    private final Encoder rightEncoder_1 = new Encoder(7, 8);
     
     // Declaring motor groups
     private final MotorControllerGroup left_drive = new MotorControllerGroup(left_1, left_2);
@@ -113,6 +118,12 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Yaw", pigeon.getYaw());
     SmartDashboard.putNumber("Pitch", pigeon.getPitch());
     SmartDashboard.putNumber("Roll", pigeon.getRoll());
+
+    // Drive Encoder Distance/Ticks
+    SmartDashboard.putNumber("DriveEncoderTicks_R", rightEncoder_1.getRaw());
+    SmartDashboard.putNumber("DriveEncoderDistance_R", rightEncoder_1.getDistance());
+    SmartDashboard.putNumber("DriveEncoderTicks_L", leftEncoder_1.getRaw());
+    SmartDashboard.putNumber("DriveEncoderDistance_L", leftEncoder_1.getDistance());
     
   }
 

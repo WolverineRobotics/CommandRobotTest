@@ -8,7 +8,7 @@ public class InputSystem {
     private static XboxController OController = new XboxController(0);
 
     public static double SpeedLimit(){
-        return 1 - (dController.getLeftTriggerAxis() * 0.5);
+        return 1 - (dController.getLeftY() * 0.5); 
     } 
 
     // DRIVER CONTROLS
@@ -18,7 +18,6 @@ public class InputSystem {
     public static double DriveRot(){
         return dController.getRightX();
     } 
-
     public static boolean FaceForward(){
         return dController.getYButton();
     } 
@@ -31,11 +30,9 @@ public class InputSystem {
     public static boolean FaceLeft(){
         return dController.getXButton();
     } 
-    
     public static boolean Balance(){
         return dController.getRightBumper();
-    } 
-
+    }
     public static XboxController Driver(){
         return dController;
     } 

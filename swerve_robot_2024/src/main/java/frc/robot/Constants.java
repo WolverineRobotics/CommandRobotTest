@@ -20,9 +20,15 @@ public final class Constants {
     public static final int kPigeonId = 0;
     
     public static final int kLeftMotor1 = 1;
-    public static final int kLeftMotor2 = 2;
+    public static final int kLeftMotor2 = 2; 
     
     public static final int kRightMotor1 = 3;
     public static final int kRightMotor2 = 4;
+
+    public static final int kLeftMotorEncoder_A = 5; 
+    public static final int kLeftMotorEncoder_B = 6;
+
+    public static final int kRightMotorEncoder_A = 7; 
+    public static final int kRightMotorEncoder_B = 8;
   }
 }
