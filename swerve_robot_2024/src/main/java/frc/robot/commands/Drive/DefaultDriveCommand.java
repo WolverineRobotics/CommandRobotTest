@@ -1,11 +1,13 @@
 package frc.robot.commands.Drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.InputSystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DefaultDriveCommand extends CommandBase {
 
-    private final DriveSubsystem m_Subsystem;
+    private DriveSubsystem m_Subsystem;
 
     public DefaultDriveCommand(DriveSubsystem subsystem){
         m_Subsystem = subsystem;
@@ -18,6 +20,10 @@ public class DefaultDriveCommand extends CommandBase {
     @Override
     public void execute() {
         m_Subsystem.ArcadeDrive();
+
+        // if(InputSystem.FaceLeft()){
+            // CommandScheduler.getInstance().schedule(new RotateToCommand(Robot.d));
+        // }
     }
 
     // Called once the command ends or is interrupted.

@@ -16,7 +16,7 @@ import frc.robot.subsystems.DriveSubsystem;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  //private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
@@ -100,21 +100,23 @@ public class Robot extends TimedRobot {
     // If the bind is pressed that the user wants to face left
     else if(InputSystem.FaceLeft()){
       
+      m_robotContainer.TestFaceDirection(90);
       // finds wether clockwise or counter clockwise will work
-      if(Math.abs(90 - m_robotContainer.GetDrive().Yaw()) <= Math.abs(-270 - m_robotContainer.GetDrive().Yaw())){
-        m_robotContainer.TestFaceDirection(90);
-      }
-      else{ m_robotContainer.TestFaceDirection(-270); }
+      //if(Math.abs(90 - m_robotContainer.GetDrive().Yaw()) <= Math.abs(-270 - m_robotContainer.GetDrive().Yaw())){
+      //  m_robotContainer.TestFaceDirection(90);
+      //}
+      //else{ m_robotContainer.TestFaceDirection(-270); }
     }
     
     // If the bind is pressed that the user wants to face right
     else if(InputSystem.FaceRight()){
+      m_robotContainer.TestFaceDirection(270);
       
       // finds wether clockwise or counter clockwise will work
-      if(Math.abs(270 - m_robotContainer.GetDrive().Yaw()) <= Math.abs(-90 - m_robotContainer.GetDrive().Yaw())){
-          m_robotContainer.TestFaceDirection(270);
-         }
-        else{ m_robotContainer.TestFaceDirection(-90); }
+      //if(Math.abs(270 - m_robotContainer.GetDrive().Yaw()) <= Math.abs(-90 - m_robotContainer.GetDrive().Yaw())){
+      //    m_robotContainer.TestFaceDirection(270);
+      //   }
+      //  else{ m_robotContainer.TestFaceDirection(-90); }
     }
 
     // When none of these requests are pressed

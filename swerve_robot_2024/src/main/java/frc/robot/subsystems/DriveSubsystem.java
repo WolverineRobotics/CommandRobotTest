@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -19,6 +20,7 @@ import frc.robot.Constants;
 import frc.robot.InputSystem;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.commands.Drive.DefaultDriveCommand;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.Encoder;
@@ -28,39 +30,61 @@ public class DriveSubsystem extends SubsystemBase {
     // Variables
 
     // Declaring drive motors
-    private final CANSparkMax left_1 = new CANSparkMax(RobotMap.LEFT_MOTOR_1, MotorType.kBrushless);
-    private final CANSparkMax left_2 = new CANSparkMax(RobotMap.LEFT_MOTOR_2, MotorType.kBrushless);
+    private CANSparkMax left_1; 
+    private CANSparkMax left_2; 
     
-    private final CANSparkMax right_1 = new CANSparkMax(RobotMap.RIGHT_MOTOR_1, MotorType.kBrushless);
-    private final CANSparkMax right_2 = new CANSparkMax(RobotMap.RIGHT_MOTOR_2, MotorType.kBrushless);
+    private CANSparkMax right_1; 
+    private CANSparkMax right_2; 
 
     // Declaring Motor Encoders & Total Distance 
-    private final Encoder leftEncoder_1 = new Encoder(5, 6);
-    private final Encoder rightEncoder_1 = new Encoder(7, 8);
+    //private final Encoder leftEncoder_1 = new Encoder(5, 6);
+    //private final Encoder rightEncoder_1 = new Encoder(7, 8);
     
     // Declaring motor groups
-    private final MotorControllerGroup left_drive = new MotorControllerGroup(left_1, left_2);
-    private final MotorControllerGroup right_drive = new MotorControllerGroup(right_1, right_2);
+    private  MotorControllerGroup left_drive;
+    private  MotorControllerGroup right_drive;
     
     // Declaring differential drive
-    private final DifferentialDrive drive = new DifferentialDrive(left_drive, right_drive);  
+    private  DifferentialDrive drive;  
     
     // Declaring Accelerometer UwU
-    private final Accelerometer accelerometer = new BuiltInAccelerometer();
+    //private final Accelerometer accelerometer = new BuiltInAccelerometer();
 
     // The Pigeon
-    private final PigeonIMU pigeon = new PigeonIMU(Constants.OperatorConstants.kPigeonId);
+    private final PigeonIMU pigeon = new PigeonIMU(2);
     private double[] position = new double[3];
     private double[] velocity = new double[3];
+    
+    
     //private double proper_yaw = 0;
+    
+    /** Creates a new ExampleSubsystem. */
+    public DriveSubsystem() {
+      pigeon.setYaw(0);
+      
+      position[0] = 0;
+      position[1] = 0;
+      position[2] = 0;
 
-  /** Creates a new ExampleSubsystem. */
-  public DriveSubsystem() {
-    pigeon.setYaw(0);
+      left_1 = new CANSparkMax(RobotMap.LEFT_MOTOR_1, MotorType.kBrushless);
+      left_2 = new CANSparkMax(RobotMap.LEFT_MOTOR_2, MotorType.kBrushless);    
+      right_1 = new CANSparkMax(RobotMap.RIGHT_MOTOR_1, MotorType.kBrushless);
+      right_2 = new CANSparkMax(RobotMap.RIGHT_MOTOR_2, MotorType.kBrushless);
+  
+      left_drive = new MotorControllerGroup(left_1, left_2);
+      right_drive = new MotorControllerGroup(right_1, right_2);
 
-    position[0] = 0;
-    position[1] = 0;
-    position[2] = 0;
+      drive = new DifferentialDrive(left_drive, right_drive);
+    
+      left_drive.setInverted(true);
+
+
+      left_1.setIdleMode(IdleMode.kBrake);
+      left_2.setIdleMode(IdleMode.kBrake);
+      right_1.setIdleMode(IdleMode.kBrake);
+      right_2.setIdleMode(IdleMode.kBrake);
+
+      setDefaultCommand(new DefaultDriveCommand(this));
 
     //proper_yaw = pigeon.getYaw();
   }
@@ -107,25 +131,25 @@ public class DriveSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     // Updates Robot Position and velocity
-    velocity[0] = accelerometer.getX();
-    velocity[1] = accelerometer.getY();
-    velocity[2] = accelerometer.getZ();
+    //velocity[0] = accelerometer.getX();
+    //velocity[1] = accelerometer.getY();
+    //velocity[2] = accelerometer.getZ();
+//
+    //position[0] += accelerometer.getX();
+    //position[1] += accelerometer.getY();
+    //position[2] += accelerometer.getZ();
 
-    position[0] += accelerometer.getX();
-    position[1] += accelerometer.getY();
-    position[2] += accelerometer.getZ();
-
-    SmartDashboard.putNumberArray("Position", position);
-    SmartDashboard.putNumberArray("Velocity", velocity);
+    //SmartDashboard.putNumberArray("Position", position);
+    //SmartDashboard.putNumberArray("Velocity", velocity);
     SmartDashboard.putNumber("Yaw", pigeon.getYaw());
     SmartDashboard.putNumber("Pitch", pigeon.getPitch());
     SmartDashboard.putNumber("Roll", pigeon.getRoll());
 
     // Drive Encoder Distance/Ticks
-    SmartDashboard.putNumber("DriveEncoderTicks_R", rightEncoder_1.getRaw());
-    SmartDashboard.putNumber("DriveEncoderDistance_R", rightEncoder_1.getDistance());
-    SmartDashboard.putNumber("DriveEncoderTicks_L", leftEncoder_1.getRaw());
-    SmartDashboard.putNumber("DriveEncoderDistance_L", leftEncoder_1.getDistance());
+    //SmartDashboard.putNumber("DriveEncoderTicks_R", rightEncoder_1.getRaw());
+    //SmartDashboard.putNumber("DriveEncoderDistance_R", rightEncoder_1.getDistance());
+    //SmartDashboard.putNumber("DriveEncoderTicks_L", leftEncoder_1.getRaw());
+    //SmartDashboard.putNumber("DriveEncoderDistance_L", leftEncoder_1.getDistance());
     
   }
 

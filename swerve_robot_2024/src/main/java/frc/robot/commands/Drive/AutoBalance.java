@@ -1,7 +1,5 @@
 package frc.robot.commands.Drive;
 
-import javax.print.attribute.standard.Finishings;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -9,9 +7,9 @@ public class AutoBalance extends CommandBase{
 
     private DriveSubsystem m_subsystem;
 
-    private double offset = 5;
+    private double offset = -5;
     private double balanced_range = 2.5;
-    private double speed = 2.75;
+    private double speed = 0.275;
 
     private boolean fini = false;
 

@@ -1,6 +1,7 @@
 package frc.robot.commands.Drive;
 
 import edu.wpi.first.networktables.Subscriber;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -39,14 +40,22 @@ public class RotateToCommand extends CommandBase {
     public void execute() {
         // Proportional Control
         error = angle - m_Subsystem.Yaw();
-        speed = gain * error;
+        speed = gain * -error;
 
         //Actual rotate fucntion
-        m_Subsystem.Rotate(speed * dir);
-
+        
         if(error < deadzone && error > -deadzone){
+        //if(error > -deadzone){//error < deadzone && error > -deadzone){
             fini = true;
+            m_Subsystem.Rotate(0);
         }
+        else{
+
+            m_Subsystem.Rotate(speed);
+        }
+
+        SmartDashboard.putNumber("ERROR", error);
+        SmartDashboard.putNumber("Speed", speed);
     
     }
 
