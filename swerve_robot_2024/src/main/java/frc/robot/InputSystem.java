@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.XboxController;
 public class InputSystem {
 
     private static XboxController dController = new XboxController(0);
-    private static XboxController OController = new XboxController(0);
+    private static XboxController oController = new XboxController(1);
 
     public static double SpeedLimit(){
         return 1 - (dController.getLeftY() * 0.5); 
@@ -35,5 +35,13 @@ public class InputSystem {
     }
     public static XboxController Driver(){
         return dController;
+    } 
+
+    // OPERATOR CONTROLS
+    public static double ManualElevator(){
+        return oController.getLeftY();
+    } 
+    public static double ManualPivot(){
+        return oController.getLeftY();
     } 
 }

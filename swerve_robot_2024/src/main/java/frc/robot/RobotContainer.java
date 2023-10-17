@@ -8,6 +8,8 @@ import frc.robot.commands.Drive.AutoBalance;
 import frc.robot.commands.Drive.DefaultDriveCommand;
 import frc.robot.commands.Drive.RotateToCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -23,6 +25,8 @@ public class RobotContainer {
   //private ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
    
   private final DriveSubsystem m_drive = new DriveSubsystem();
+  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  private final PivotSubsystem m_pivot = new PivotSubsystem();
   private Command m_driveCommand;
   private RotateToCommand m_turnCommand;
   private AutoBalance m_balanceCommand;
@@ -46,7 +50,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    
     //m_drive = new DefaultDriveCommand(m_drive);
    // CommandScheduler.getInstance().setDefaultCommand(m_drive, new DefaultDriveCommand(m_drive));    
   }
