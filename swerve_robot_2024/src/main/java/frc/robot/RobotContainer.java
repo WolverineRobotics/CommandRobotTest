@@ -9,6 +9,7 @@ import frc.robot.commands.Drive.DefaultDriveCommand;
 import frc.robot.commands.Drive.RotateToCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,6 +28,7 @@ public class RobotContainer {
   private final DriveSubsystem m_drive = new DriveSubsystem();
   private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
   private final PivotSubsystem m_pivot = new PivotSubsystem();
+  private final IntakeSubsystem m_intake = new IntakeSubsystem();
   private Command m_driveCommand;
   private RotateToCommand m_turnCommand;
   private AutoBalance m_balanceCommand;
@@ -43,14 +45,9 @@ public class RobotContainer {
     return m_drive;
   }
   
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  //private final CommandXboxController m_driverController =
-  //new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    //m_drive = new DefaultDriveCommand(m_drive);
    // CommandScheduler.getInstance().setDefaultCommand(m_drive, new DefaultDriveCommand(m_drive));    
   }
 

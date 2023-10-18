@@ -5,13 +5,14 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InputSystem;
+import frc.robot.Constants.OperatorConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
 
     private CANSparkMax motor;
 
     public IntakeSubsystem(){
-        motor = new CANSparkMax(0, MotorType.kBrushless);
+        motor = new CANSparkMax(OperatorConstants.kIntakeMotor, MotorType.kBrushless);
     }
 
     public void ManualControl(){

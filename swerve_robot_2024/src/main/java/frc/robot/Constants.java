@@ -30,5 +30,11 @@ public final class Constants {
 
     public static final int kRightMotorEncoder_A = 7; 
     public static final int kRightMotorEncoder_B = 8;
+
+    public static final int kElevatorMotor1 = 14; 
+    public static final int kElevatorMotor2 = 10;
+    
+    public static final int kPivotMotor = 15;
+    public static final int kIntakeMotor = 16;
   }
 }

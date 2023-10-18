@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InputSystem;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Elevator.DefaultElevatorCommand;
 
 public class ElevatorSubsystem extends SubsystemBase{
@@ -17,8 +18,8 @@ public class ElevatorSubsystem extends SubsystemBase{
     private RelativeEncoder encoder; 
 
     public ElevatorSubsystem(){
-        m_motor_1 = new CANSparkMax(10, MotorType.kBrushless);
-        m_motor_2 = new CANSparkMax(14, MotorType.kBrushless);
+        m_motor_1 = new CANSparkMax(OperatorConstants.kElevatorMotor1, MotorType.kBrushless);
+        m_motor_2 = new CANSparkMax(OperatorConstants.kElevatorMotor2, MotorType.kBrushless);
         m_motors = new MotorControllerGroup(m_motor_1, m_motor_2);
         encoder = m_motor_1.getEncoder();
         //encoder.setInverted(true);

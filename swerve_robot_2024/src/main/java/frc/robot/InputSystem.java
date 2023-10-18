@@ -45,6 +45,6 @@ public class InputSystem {
         return oController.getLeftY();
     } 
     public static double ManualIntake(){
-        return (oController.getLeftTriggerAxis() * 1) + (oController.getRightTriggerAxis() * -1) * 0.5;
+        return (oController.getLeftTriggerAxis()) + (oController.getRightTriggerAxis() * -1) * 0.5;
     } 
 }

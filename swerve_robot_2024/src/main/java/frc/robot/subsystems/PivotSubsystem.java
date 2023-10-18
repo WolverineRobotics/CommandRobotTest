@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InputSystem;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake.DefaultPivotCommand;
 
 public class PivotSubsystem extends SubsystemBase{
@@ -16,7 +17,7 @@ public class PivotSubsystem extends SubsystemBase{
     private RelativeEncoder encoder;// = m_motor.getEncoder(); 
 
     public PivotSubsystem(){
-        m_motor = new CANSparkMax(15, MotorType.kBrushless);
+        m_motor = new CANSparkMax(OperatorConstants.kPivotMotor, MotorType.kBrushless);
         encoder = m_motor.getEncoder();
         //encoder.setInverted(true);
         encoder.setPosition(0);
