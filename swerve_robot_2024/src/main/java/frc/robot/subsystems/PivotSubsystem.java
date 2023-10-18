@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InputSystem;
-import frc.robot.commands.Drive.DefaultPivotCommand;
+import frc.robot.commands.Intake.DefaultPivotCommand;
 
 public class PivotSubsystem extends SubsystemBase{
     

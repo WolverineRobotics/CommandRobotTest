@@ -1,14 +1,13 @@
-package frc.robot.commands.Drive;
+package frc.robot.commands.Elevator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.PivotSubsystem;
 
-public class DefaultPivotCommand extends CommandBase {
-    private PivotSubsystem m_Subsystem;
+public class DefaultElevatorCommand extends CommandBase {
+    private ElevatorSubsystem m_Subsystem;
 
-    public DefaultPivotCommand(PivotSubsystem subsystem){
+    public DefaultElevatorCommand(ElevatorSubsystem subsystem){
         m_Subsystem = subsystem;
         addRequirements(subsystem);
     }
@@ -17,13 +16,7 @@ public class DefaultPivotCommand extends CommandBase {
     public void initialize() {}
     
     @Override
-    public void execute() {
-        m_Subsystem.ManualControl();
-
-        // if(InputSystem.FaceLeft()){
-            // CommandScheduler.getInstance().schedule(new RotateToCommand(Robot.d));
-        // }
-    }
+    public void execute() { m_Subsystem.ManualControl(); }
 
     // Called once the command ends or is interrupted.
     @Override
@@ -33,5 +26,6 @@ public class DefaultPivotCommand extends CommandBase {
     @Override
     public boolean isFinished() {
       return false;
-    }   
+    }
+    
 }
