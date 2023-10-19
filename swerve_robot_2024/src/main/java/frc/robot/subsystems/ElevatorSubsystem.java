@@ -22,7 +22,7 @@ public class ElevatorSubsystem extends PIDSubsystem{
 
     public ElevatorSubsystem(){
 
-        super(new PIDController(0.05, 0.01, 0.02));
+        super(new PIDController(0.15, 0.01, 0.02));
         m_motor_1 = new CANSparkMax(OperatorConstants.kElevatorMotor1, MotorType.kBrushless);
         m_motor_2 = new CANSparkMax(OperatorConstants.kElevatorMotor2, MotorType.kBrushless);
         m_motors = new MotorControllerGroup(m_motor_1, m_motor_2);
@@ -30,8 +30,9 @@ public class ElevatorSubsystem extends PIDSubsystem{
         //encoder.setInverted(true);
         encoder.setPosition(0);
         
-        getController().setSetpoint(0);
+        getController().setSetpoint(-30);
         getController().setTolerance(1);
+        disable();
 
         setDefaultCommand(new DefaultElevatorCommand(this));
 
@@ -41,39 +42,37 @@ public class ElevatorSubsystem extends PIDSubsystem{
     @Override
     public void periodic(){
         SmartDashboard.putNumber("elevator_encoder", encoder.getPosition());
+        SmartDashboard.putNumber("elevator_error", getMeasurement());
+        SmartDashboard.putBoolean("enabled", isEnabled());
         
-        if(InputSystem.Operator().getAButtonPressed()){
-            enable();
-        }
-        if(InputSystem.Operator().getAButtonReleased()){
-            disable();
-        }
+
         
     } 
     
     public void ManualControl(){
         double speed = InputSystem.ManualElevator();
         if(Math.abs(speed) >= 0.2){ 
+
             m_motors.set(speed * 0.35);
             
             //if(encoder.getPosition() > 48 || encoder.getPosition() <= 2 ){
-                //    m_motors.set(0);
+            //        m_motors.set(0);
             //}
             //else{
-                //    m_motors.set(speed * 0.35);
-                //
-                //}
-            }
-            else{
-                m_motors.set(0);
-            }
+            //        m_motors.set(speed * 0.35);
+            //    
+            //    }
+        }
+        else {//if(!isEnabled()){
+            m_motors.set(0);
+        }
             
-        } 
-        protected void useOutput(double output, double setpoint){
-            m_motors.set(output);
-        };
-    
-        protected double getMeasurement(){
-            return getSetpoint() - encoder.getPosition();
-        };
+    } 
+    protected void useOutput(double output, double setpoint){
+        m_motors.set(output);
+    };
+
+    protected double getMeasurement(){
+        return getSetpoint() - encoder.getPosition();
+    };
 }

@@ -45,7 +45,7 @@ public class InputSystem {
         return oController.getLeftY();
     } 
     public static double ManualPivot(){
-        return oController.getLeftY();
+        return oController.getRightY();
     } 
     public static double ManualIntake(){
         return (oController.getLeftTriggerAxis()) + (oController.getRightTriggerAxis() * -1) * 0.5;
