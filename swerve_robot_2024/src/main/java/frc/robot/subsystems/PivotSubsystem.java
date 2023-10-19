@@ -4,19 +4,23 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InputSystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake.DefaultPivotCommand;
 
-public class PivotSubsystem extends SubsystemBase{
+public class PivotSubsystem extends PIDSubsystem{
     
     private CANSparkMax m_motor;// = new CANSparkMax(15, MotorType.kBrushless);
     private RelativeEncoder encoder;// = m_motor.getEncoder(); 
 
     public PivotSubsystem(){
+        super(new PIDController(0.1, 0.02, 0.05));
+
         m_motor = new CANSparkMax(OperatorConstants.kPivotMotor, MotorType.kBrushless);
         encoder = m_motor.getEncoder();
         //encoder.setInverted(true);
@@ -24,7 +28,15 @@ public class PivotSubsystem extends SubsystemBase{
 
         setDefaultCommand(new DefaultPivotCommand(this));
 
+        getController().setSetpoint(-10);
+        getController().setTolerance(1);
+
     }
+
+    //public void OnStart(){
+    //    encoder.setInverted(true);
+//
+    //}
 
     @Override
     public void periodic(){
@@ -61,4 +73,12 @@ public class PivotSubsystem extends SubsystemBase{
         }
 
     } 
+
+    protected void useOutput(double output, double setpoint){
+        m_motor.set(output);
+    };
+    
+    protected double getMeasurement(){
+        return getSetpoint() - encoder.getPosition();
+    };
 }

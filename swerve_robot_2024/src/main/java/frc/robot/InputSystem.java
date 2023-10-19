@@ -36,8 +36,11 @@ public class InputSystem {
     public static XboxController Driver(){
         return dController;
     } 
-
+    
     // OPERATOR CONTROLS
+    public static XboxController Operator(){
+        return oController;
+    } 
     public static double ManualElevator(){
         return oController.getLeftY();
     } 
@@ -46,5 +49,10 @@ public class InputSystem {
     } 
     public static double ManualIntake(){
         return (oController.getLeftTriggerAxis()) + (oController.getRightTriggerAxis() * -1) * 0.5;
+    } 
+    
+    
+    public static boolean ToMidCube(){
+        return oController.getXButtonPressed();
     } 
 }

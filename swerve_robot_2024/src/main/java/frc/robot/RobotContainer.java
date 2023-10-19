@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.commands.Drive.AutoBalance;
 import frc.robot.commands.Drive.DefaultDriveCommand;
 import frc.robot.commands.Drive.RotateToCommand;
+import frc.robot.commands.OperatorSetPoints.MidCubeCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -54,6 +55,10 @@ public class RobotContainer {
   public void UpdateConfig(){
     //side = SmartDashboard.getNumber("Side", 0); // 0 for blue, 1 for red
     //start_pos= SmartDashboard.getNumber("StartingPos", 0); // 0: leftmost, 1: center, 2: rightmost
+  }
+
+  public void StartMidCubeCommand(){
+    new MidCubeCommand(m_pivot, m_elevator).schedule();
   }
 
   public void TestFaceDirection(double direction){

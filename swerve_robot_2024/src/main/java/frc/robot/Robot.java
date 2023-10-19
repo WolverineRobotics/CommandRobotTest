@@ -118,12 +118,16 @@ public class Robot extends TimedRobot {
       //   }
       //  else{ m_robotContainer.TestFaceDirection(-90); }
     }
-
+    
     // When none of these requests are pressed
     else{
       m_robotContainer.NoTurnInput();
     }
-
+    
+    
+    if(InputSystem.ToMidCube()){
+      m_robotContainer.StartMidCubeCommand();
+    }
 
     m_robotContainer.Balance(InputSystem.Balance());
 
