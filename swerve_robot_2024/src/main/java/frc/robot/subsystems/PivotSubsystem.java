@@ -19,7 +19,7 @@ public class PivotSubsystem extends PIDSubsystem{
     private RelativeEncoder encoder;// = m_motor.getEncoder(); 
 
     public PivotSubsystem(){
-        super(new PIDController(5.4, 0.1, 0.00001));
+        super(new PIDController(0.5, 0.1, -0.1, 0.02));
 
         m_motor = new CANSparkMax(OperatorConstants.kPivotMotor, MotorType.kBrushless);
         encoder = m_motor.getEncoder();
