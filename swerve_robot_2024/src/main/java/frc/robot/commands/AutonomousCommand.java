@@ -12,15 +12,12 @@ public class AutonomousCommand extends CommandBase {
         weBalling = subsystem; // Initalize 'weBalling as a subsystem'
         addRequirements(weBalling); // Subsystem Dependency
 
-        //Timer timer = new Timer(); 
     }
-    
-    // Command for Driving 
-    //@Override
-    //public void intitialize(){
-    //    Timer.reset();
-    //    Timer.start();
-    //}
+
+    @Override
+    public void intitialize(){
+        withTimeout(0.5);
+    }
 
     @Override
     public void execute(){
@@ -36,6 +33,6 @@ public class AutonomousCommand extends CommandBase {
     @Override
     public boolean isFinished() { 
     //    return timer.get() > 2;
-        return false;
+        return true;
     }
 }

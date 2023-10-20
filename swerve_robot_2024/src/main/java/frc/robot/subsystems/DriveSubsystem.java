@@ -21,6 +21,10 @@ import frc.robot.InputSystem;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.Drive.DefaultDriveCommand;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.math.controller.PIDController;
+import frc.robot.pid.DriveFeedForwardPID;
+import frc.robot.math.controller.SimpleMotorFeedForward;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.Encoder;
@@ -36,9 +40,12 @@ public class DriveSubsystem extends SubsystemBase {
     private CANSparkMax right_1; 
     private CANSparkMax right_2; 
 
-    // Declaring Motor Encoders & Total Distance 
-    //private final Encoder leftEncoder_1 = new Encoder(5, 6);
-    //private final Encoder rightEncoder_1 = new Encoder(7, 8);
+    CANPIDController leftController = leftLeader.getPIDController();
+    CANPIDController rightController = rightLeader.getPIDController();
+
+    // declaring Motor Encoders & Total Distance 
+    // private final Encoder leftEncoder_1 = new Encoder(5, 6);
+    // private final Encoder rightEncoder_1 = new Encoder(7, 8);
     
     // Declaring motor groups
     private  MotorControllerGroup left_drive;
@@ -54,8 +61,34 @@ public class DriveSubsystem extends SubsystemBase {
     private final PigeonIMU pigeon = new PigeonIMU(2);
     private double[] position = new double[3];
     private double[] velocity = new double[3];
+
+    public double kP, kI, kD, kIZone, setpoint, errorSum;
+
+    // set random things everywhere
+    // localstore classic
+    double kP = 0;
+    double kI = 0;
+    double kD = 0;
+    double kIZone = 0; 
+
+    double setpoint = 0;
+    double errorSum = 0;
+
+    leftController.setP(kP);
+    rightController.setP(kP);
+
+    leftController.setI(kI);
+    rightController.setI(kI);
+
+    leftController.setD(kD);
+    rightController.setD(kD);
+
+    leftController.setIZone(kIZone);
+    rightController.setPIZone(kIZone);
     
-    
+    leftController.setOutputRange(-1, 1);
+    rightController.setOutputRange(-1, 1);
+
     //private double proper_yaw = 0;
     
     /** Creates a new ExampleSubsystem. */
@@ -86,7 +119,27 @@ public class DriveSubsystem extends SubsystemBase {
 
       setDefaultCommand(new DefaultDriveCommand(this));
 
+      super(new PIDController(kP, kI, kD));
+      getController().setTolerance(0.5);
+      getController().setpoint(1);
+
     //proper_yaw = pigeon.getYaw();
+  }
+
+  // i am coding on vscode web again 
+  // surely it works :troll:
+  @Override
+  public double getMeasurement(){
+    return kRightMotorEncoder_A.getRate();
+    return kRightMotorEncoder_B.getRate();
+    return kLeftMotorEncoder_A.getRate();
+    return kLeftMotorEncoder_B.getRate();
+  }
+
+  @Override
+  public boolean atSetpoint(){
+    return leftController.atSetpoint();
+    return rightController.atSetpoint();
   }
 
   public CommandBase DriveMethodCommand() {
@@ -144,6 +197,12 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Yaw", pigeon.getYaw());
     SmartDashboard.putNumber("Pitch", pigeon.getPitch());
     SmartDashboard.putNumber("Roll", pigeon.getRoll());
+
+    // inshallah smartdashboard will print this out 
+    SmartDashboard.putNumber("kP Gain", kP);
+    SmartDashboard.putNumber("kI Gain", kI);
+    SmartDashboard.putNumber("kD Gain", kD);
+
 
     // Drive Encoder Distance/Ticks
     //SmartDashboard.putNumber("DriveEncoderTicks_R", rightEncoder_1.getRaw());
