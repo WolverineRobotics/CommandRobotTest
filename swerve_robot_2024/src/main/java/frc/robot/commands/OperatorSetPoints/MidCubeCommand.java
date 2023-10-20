@@ -13,13 +13,13 @@ public class MidCubeCommand extends CommandBase {
         pivot = _pivot;
 
         addRequirements(_pivot);
-        addRequirements(_elevator);
+        //addRequirements(_elevator);
     }
 
     @Override
     public void initialize() {
-        pivot.setSetpoint(-40);
-        elevator.setSetpoint(-30);
+        pivot.setSetpoint(-20);
+        //elevator.setSetpoint(-30);
     }
     
     @Override

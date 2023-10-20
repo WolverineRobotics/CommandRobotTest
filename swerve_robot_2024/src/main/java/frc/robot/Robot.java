@@ -123,6 +123,20 @@ public class Robot extends TimedRobot {
     else{
       m_robotContainer.NoTurnInput();
     }
+
+    if(InputSystem.Operator().getAButtonPressed()){
+      m_robotContainer.getPivot().enable();
+    }
+    if(InputSystem.Operator().getBButtonPressed()){
+        m_robotContainer.getPivot().setSetpoint(-35);
+    }
+    if(InputSystem.Operator().getStartButtonPressed()){
+        m_robotContainer.getPivot().setSetpoint(-10);
+    }
+  
+    if(InputSystem.Operator().getYButtonPressed()){
+        m_robotContainer.getPivot().disable();
+    }
     
     
     if(InputSystem.ToMidCube()){

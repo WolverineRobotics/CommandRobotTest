@@ -72,6 +72,10 @@ public class RobotContainer {
     
   }
 
+  public PivotSubsystem getPivot(){
+    return m_pivot;
+  }
+
   public void NoTurnInput(){
     if(isTurning){
       m_turnCommand.EndCall();
