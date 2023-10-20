@@ -4,15 +4,21 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.SparkMaxRelativeEncoder.Type;
+import com.revrobotics.CANSparkMax.ControlType;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,8 +29,6 @@ import frc.robot.RobotMap;
 import frc.robot.commands.Drive.DefaultDriveCommand;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.math.controller.PIDController;
-import frc.robot.pid.DriveFeedForwardPID;
-import frc.robot.math.controller.SimpleMotorFeedForward;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.Encoder;
@@ -38,10 +42,9 @@ public class DriveSubsystem extends SubsystemBase {
     private CANSparkMax left_2; 
     
     private CANSparkMax right_1; 
-    private CANSparkMax right_2; 
+    private CANSparkMax right_2;
 
-    CANPIDController leftController = leftLeader.getPIDController();
-    CANPIDController rightController = rightLeader.getPIDController();
+    private double kP, kI, kD, kIZone, setpoint, errorSum;
 
     // declaring Motor Encoders & Total Distance 
     // private final Encoder leftEncoder_1 = new Encoder(5, 6);
@@ -61,33 +64,6 @@ public class DriveSubsystem extends SubsystemBase {
     private final PigeonIMU pigeon = new PigeonIMU(2);
     private double[] position = new double[3];
     private double[] velocity = new double[3];
-
-    public double kP, kI, kD, kIZone, setpoint, errorSum;
-
-    // set random things everywhere
-    // localstore classic
-    double kP = 0;
-    double kI = 0;
-    double kD = 0;
-    double kIZone = 0; 
-
-    double setpoint = 0;
-    double errorSum = 0;
-
-    leftController.setP(kP);
-    rightController.setP(kP);
-
-    leftController.setI(kI);
-    rightController.setI(kI);
-
-    leftController.setD(kD);
-    rightController.setD(kD);
-
-    leftController.setIZone(kIZone);
-    rightController.setPIZone(kIZone);
-    
-    leftController.setOutputRange(-1, 1);
-    rightController.setOutputRange(-1, 1);
 
     //private double proper_yaw = 0;
     
@@ -119,27 +95,48 @@ public class DriveSubsystem extends SubsystemBase {
 
       setDefaultCommand(new DefaultDriveCommand(this));
 
-      super(new PIDController(kP, kI, kD));
-      getController().setTolerance(0.5);
-      getController().setpoint(1);
+      /*
+       * Get the PID Controllers for both masters (left_1, right_1)
+       */
+      SparkMaxPIDController leftBaller =  left_1.getPIDController();
+      SparkMaxPIDController rightBaller = right_1.getPIDController();
+
+      RelativeEncoder kLeftMotorEncoder_A = left_1.getEncoder();
+      RelativeEncoder kLeftMotorEncoder_B = left_2.getEncoder();
+
+      RelativeEncoder kRightMotorEncoder_A = right_1.getEncoder();
+      RelativeEncoder kRightMotorEncoder_B = right_2.getEncoder();
+      
+      left_2.follow(left_1, true);
+      right_2.follow(right_1, true);
+      
+      
+      leftBaller.setP(kP);
+      rightBaller.setP(kP);
+
+      leftBaller.setI(kI);
+      rightBaller.setI(kI);
+
+      leftBaller.setD(kD);
+      rightBaller.setD(kD);
+
+      leftBaller.setIZone(kIZone);
+      rightBaller.setIZone(kIZone);
+ 
+      /*
+       * Ratio between one metre (in inches) to the cycles per inch
+       * Comes around to 545.29 encoder ticks per metre.
+       */
+      kLeftMotorEncoder_A.setPositionConversionFactor(39.37 / RobotMap.CYCLES_PER_INCH);
+      kLeftMotorEncoder_B.setPositionConversionFactor(39.37 / RobotMap.CYCLES_PER_INCH);
+      kRightMotorEncoder_A.setPositionConversionFactor(39.37 / RobotMap.CYCLES_PER_INCH);
+      kRightMotorEncoder_B.setPositionConversionFactor(39.37 / RobotMap.CYCLES_PER_INCH);
+
+      // Since outputs from controllers are -1 -> 1
+      leftBaller.setOutputRange(-1, 1);
+      rightBaller.setOutputRange(-1, 1);
 
     //proper_yaw = pigeon.getYaw();
-  }
-
-  // i am coding on vscode web again 
-  // surely it works :troll:
-  @Override
-  public double getMeasurement(){
-    return kRightMotorEncoder_A.getRate();
-    return kRightMotorEncoder_B.getRate();
-    return kLeftMotorEncoder_A.getRate();
-    return kLeftMotorEncoder_B.getRate();
-  }
-
-  @Override
-  public boolean atSetpoint(){
-    return leftController.atSetpoint();
-    return rightController.atSetpoint();
   }
 
   public CommandBase DriveMethodCommand() {
@@ -148,6 +145,7 @@ public class DriveSubsystem extends SubsystemBase {
           /* one-time action goes here */
         });
   }
+
 
   // Drive Methods
 
@@ -210,6 +208,22 @@ public class DriveSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("DriveEncoderTicks_L", leftEncoder_1.getRaw());
     //SmartDashboard.putNumber("DriveEncoderDistance_L", leftEncoder_1.getDistance());
     
+  }
+
+  public double getLeftEncoderA_Distance(Encoder kLeftMotorEncoder_A){
+    return kLeftMotorEncoder_A.getDistance();
+  }
+
+  public double getLeftEncoderB_Distance(Encoder kLeftMotorEncoder_B){
+    return kLeftMotorEncoder_B.getDistance();
+  }
+
+  public double getRightEncoderA_Distance(Encoder kRightMotorEncoder_A){
+    return kRightMotorEncoder_A.getDistance();
+  }
+
+  public double getRightEncoderB_Distance(Encoder kRightMotorEncoder_B){
+    return kRightMotorEncoder_B.getDistance();
   }
 
   @Override
