@@ -27,6 +27,7 @@ import frc.robot.InputSystem;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.Drive.DefaultDriveCommand;
+import pabeles.concurrency.IntOperatorTask.Min;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.math.controller.PIDController;
 
@@ -44,7 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
     private CANSparkMax right_1; 
     private CANSparkMax right_2;
 
-    private double kP, kI, kD, kIZone, setpoint, errorSum;
+    private double kP, kI, kD, kIZone, kMaxOutput, kMinInput, setpoint, errorSum;
 
     // declaring Motor Encoders & Total Distance 
     // private final Encoder leftEncoder_1 = new Encoder(5, 6);
@@ -56,6 +57,9 @@ public class DriveSubsystem extends SubsystemBase {
     
     // Declaring differential drive
     private  DifferentialDrive drive;  
+
+    private SparkMaxPIDController leftBaller;
+    private SparkMaxPIDController rightBaller;
     
     // Declaring Accelerometer UwU
     //private final Accelerometer accelerometer = new BuiltInAccelerometer();
@@ -101,15 +105,24 @@ public class DriveSubsystem extends SubsystemBase {
       SparkMaxPIDController leftBaller =  left_1.getPIDController();
       SparkMaxPIDController rightBaller = right_1.getPIDController();
 
-      RelativeEncoder kLeftMotorEncoder_A = left_1.getEncoder();
-      RelativeEncoder kLeftMotorEncoder_B = left_2.getEncoder();
+      // LEFT ENCODERS
+      RelativeEncoder kLeftMotorEncoder_A = left_1.getEncoder(); 
+      RelativeEncoder kLeftMotorEncoder_B = left_2.getEncoder(); 
 
+      // RIGHT ENCODERS
       RelativeEncoder kRightMotorEncoder_A = right_1.getEncoder();
       RelativeEncoder kRightMotorEncoder_B = right_2.getEncoder();
       
       left_2.follow(left_1, true);
       right_2.follow(right_1, true);
-      
+
+      // Gain Values
+      kP = 0.1;
+      kI = 0.01;
+      kD = 1.3;
+      kIZone = 0;
+      kMaxOutput = 1;
+      kMinInput = -1;
       
       leftBaller.setP(kP);
       rightBaller.setP(kP);
@@ -133,8 +146,16 @@ public class DriveSubsystem extends SubsystemBase {
       kRightMotorEncoder_B.setPositionConversionFactor(39.37 / RobotMap.CYCLES_PER_INCH);
 
       // Since outputs from controllers are -1 -> 1
+
       leftBaller.setOutputRange(-1, 1);
       rightBaller.setOutputRange(-1, 1);
+
+      SmartDashboard.putNumber("kP Gain", kP);
+      SmartDashboard.putNumber("kI Gain", kI);
+      SmartDashboard.putNumber("kD Gain", kD);
+      SmartDashboard.putNumber("I Zone", kIZone);
+      SmartDashboard.putNumber("Min Output", kMinInput);
+      SmartDashboard.putNumber("Max Output", kMaxOutput);
 
     //proper_yaw = pigeon.getYaw();
   }
@@ -145,7 +166,6 @@ public class DriveSubsystem extends SubsystemBase {
           /* one-time action goes here */
         });
   }
-
 
   // Drive Methods
 
@@ -177,6 +197,11 @@ public class DriveSubsystem extends SubsystemBase {
     return pigeon.getPitch();
   }
 
+  public void pidDrive(double distance){
+    leftBaller.setReference(distance, CANSparkMax.ControlType.kPosition);
+    rightBaller.setReference(distance, CANSparkMax.ControlType.kPosition);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -195,21 +220,33 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Yaw", pigeon.getYaw());
     SmartDashboard.putNumber("Pitch", pigeon.getPitch());
     SmartDashboard.putNumber("Roll", pigeon.getRoll());
+    
+    double p = SmartDashboard.getNumber("kP Gain", 0);
+    double i = SmartDashboard.getNumber("kI Gain", 0);
+    double d = SmartDashboard.getNumber("kD Gain", 0);
+    double iz = SmartDashboard.getNumber("I Zone", 0);
+    double min = SmartDashboard.getNumber("Min Ouput", 0);
+    double max = SmartDashboard.getNumber("Max Output", 0);
+    double distance = SmartDashboard.getNumber("Distance", 0);
+    
+    /*
+     * This will update any values that have changed on the PID controllers
+     */
+    if(p != kP){leftBaller.setP(p); kP = p; rightBaller.setP(p); kP = p;}
+    if(i != kI){leftBaller.setI(i); kI = i; rightBaller.setP(i); kI = i;}
+    if(d != kD){leftBaller.setP(d); kD = d; rightBaller.setP(d); kP = d;}
+    if(iz != kIZone){leftBaller.setP(iz); kIZone = iz; rightBaller.setP(iz); kIZone = iz;}
+    if ((min != kMinInput) || (max != kMaxOutput)){
+      leftBaller.setOutputRange(min, max);
+      rightBaller.setOutputRange(min, max);
+      kMinInput = min; kMaxOutput = max;
+    }
 
-    // inshallah smartdashboard will print this out 
-    SmartDashboard.putNumber("kP Gain", kP);
-    SmartDashboard.putNumber("kI Gain", kI);
-    SmartDashboard.putNumber("kD Gain", kD);
-
-
-    // Drive Encoder Distance/Ticks
-    //SmartDashboard.putNumber("DriveEncoderTicks_R", rightEncoder_1.getRaw());
-    //SmartDashboard.putNumber("DriveEncoderDistance_R", rightEncoder_1.getDistance());
-    //SmartDashboard.putNumber("DriveEncoderTicks_L", leftEncoder_1.getRaw());
-    //SmartDashboard.putNumber("DriveEncoderDistance_L", leftEncoder_1.getDistance());
+    SmartDashboard.putNumber("Distance", distance);
     
   }
 
+  /* 
   public double getLeftEncoderA_Distance(Encoder kLeftMotorEncoder_A){
     return kLeftMotorEncoder_A.getDistance();
   }
@@ -225,6 +262,7 @@ public class DriveSubsystem extends SubsystemBase {
   public double getRightEncoderB_Distance(Encoder kRightMotorEncoder_B){
     return kRightMotorEncoder_B.getDistance();
   }
+*/
 
   @Override
   public void simulationPeriodic() {
