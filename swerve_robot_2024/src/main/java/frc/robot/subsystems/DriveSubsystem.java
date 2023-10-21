@@ -16,7 +16,9 @@ import com.revrobotics.CANSparkMax.ControlType;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,9 +29,16 @@ import frc.robot.InputSystem;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.Drive.DefaultDriveCommand;
-import pabeles.concurrency.IntOperatorTask.Min;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.Encoder;
@@ -45,12 +54,10 @@ public class DriveSubsystem extends SubsystemBase {
     private CANSparkMax right_1; 
     private CANSparkMax right_2;
 
-    private double kP, kI, kD, kIZone, kMaxOutput, kMinInput, setpoint, errorSum;
+    private double kP, kI, kD, kIZone, kMaxOutput, kMinOutput, setpoint, errorSum;
+    private double heading;
+    private double error;
 
-    // declaring Motor Encoders & Total Distance 
-    // private final Encoder leftEncoder_1 = new Encoder(5, 6);
-    // private final Encoder rightEncoder_1 = new Encoder(7, 8);
-    
     // Declaring motor groups
     private  MotorControllerGroup left_drive;
     private  MotorControllerGroup right_drive;
@@ -60,9 +67,12 @@ public class DriveSubsystem extends SubsystemBase {
 
     private SparkMaxPIDController leftBaller;
     private SparkMaxPIDController rightBaller;
+
+    private DifferentialDriveOdometry m_Odometry;
+    private Encoder leftEncoder, rightEncoder;
+
+    private DifferentialDriveKinematics m_Kinematics;
     
-    // Declaring Accelerometer UwU
-    //private final Accelerometer accelerometer = new BuiltInAccelerometer();
 
     // The Pigeon
     private final PigeonIMU pigeon = new PigeonIMU(2);
@@ -79,11 +89,17 @@ public class DriveSubsystem extends SubsystemBase {
       position[1] = 0;
       position[2] = 0;
 
+      pigeon.getYaw();
+      pigeon.getFusedHeading();
+
       left_1 = new CANSparkMax(RobotMap.LEFT_MOTOR_1, MotorType.kBrushless);
       left_2 = new CANSparkMax(RobotMap.LEFT_MOTOR_2, MotorType.kBrushless);    
       right_1 = new CANSparkMax(RobotMap.RIGHT_MOTOR_1, MotorType.kBrushless);
       right_2 = new CANSparkMax(RobotMap.RIGHT_MOTOR_2, MotorType.kBrushless);
-  
+      
+      leftEncoder = new Encoder(Constants.OperatorConstants.kLeftMotorEncoder_A, Constants.OperatorConstants.kLeftMotorEncoder_B);
+      rightEncoder = new Encoder(Constants.OperatorConstants.kRightMotorEncoder_A, Constants.OperatorConstants.kRightMotorEncoder_B);
+
       left_drive = new MotorControllerGroup(left_1, left_2);
       right_drive = new MotorControllerGroup(right_1, right_2);
 
@@ -91,11 +107,14 @@ public class DriveSubsystem extends SubsystemBase {
     
       left_drive.setInverted(true);
 
-
       left_1.setIdleMode(IdleMode.kBrake);
       left_2.setIdleMode(IdleMode.kBrake);
       right_1.setIdleMode(IdleMode.kBrake);
       right_2.setIdleMode(IdleMode.kBrake);
+
+
+      // assuming TW is 1.297m (from the 2020 bot) until i find out what it is
+      m_Kinematics = new DifferentialDriveKinematics(1.297);
 
       setDefaultCommand(new DefaultDriveCommand(this));
 
@@ -106,23 +125,24 @@ public class DriveSubsystem extends SubsystemBase {
       SparkMaxPIDController rightBaller = right_1.getPIDController();
 
       // LEFT ENCODERS
-      RelativeEncoder kLeftMotorEncoder_A = left_1.getEncoder(); 
-      RelativeEncoder kLeftMotorEncoder_B = left_2.getEncoder(); 
+      RelativeEncoder kLeftMotorEncoder_A = left_1.getEncoder(); // 5
+      RelativeEncoder kLeftMotorEncoder_B = left_2.getEncoder(); // 6
 
       // RIGHT ENCODERS
-      RelativeEncoder kRightMotorEncoder_A = right_1.getEncoder();
-      RelativeEncoder kRightMotorEncoder_B = right_2.getEncoder();
-      
+      RelativeEncoder kRightMotorEncoder_A = right_1.getEncoder(); // 7
+      RelativeEncoder kRightMotorEncoder_B = right_2.getEncoder(); // 8
+
+
       left_2.follow(left_1, true);
-      right_2.follow(right_1, true);
+      right_2.follow(right_1, false);
 
       // Gain Values
-      kP = 0.1;
-      kI = 0.01;
-      kD = 1.3;
+      kP = 1;
+      kI = 0;
+      kD = 0;
       kIZone = 0;
       kMaxOutput = 1;
-      kMinInput = -1;
+      kMinOutput = -1;
       
       leftBaller.setP(kP);
       rightBaller.setP(kP);
@@ -140,13 +160,13 @@ public class DriveSubsystem extends SubsystemBase {
        * Ratio between one metre (in inches) to the cycles per inch
        * Comes around to 545.29 encoder ticks per metre.
        */
+
       kLeftMotorEncoder_A.setPositionConversionFactor(39.37 / RobotMap.CYCLES_PER_INCH);
       kLeftMotorEncoder_B.setPositionConversionFactor(39.37 / RobotMap.CYCLES_PER_INCH);
       kRightMotorEncoder_A.setPositionConversionFactor(39.37 / RobotMap.CYCLES_PER_INCH);
       kRightMotorEncoder_B.setPositionConversionFactor(39.37 / RobotMap.CYCLES_PER_INCH);
 
       // Since outputs from controllers are -1 -> 1
-
       leftBaller.setOutputRange(-1, 1);
       rightBaller.setOutputRange(-1, 1);
 
@@ -154,11 +174,31 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("kI Gain", kI);
       SmartDashboard.putNumber("kD Gain", kD);
       SmartDashboard.putNumber("I Zone", kIZone);
-      SmartDashboard.putNumber("Min Output", kMinInput);
+      SmartDashboard.putNumber("Min Output", kMinOutput);
       SmartDashboard.putNumber("Max Output", kMaxOutput);
 
-    //proper_yaw = pigeon.getYaw();
+      m_Odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()), getLeftEncoderDistance(), getRightEncoderDistance());
+
   }
+
+  public double getLeftEncoderDistance(){
+    return leftEncoder.getDistance();
+  }
+
+  public double getRightEncoderDistance(){
+    return rightEncoder.getDistance();
+  }
+
+  private double getPigeonHeading() {
+      double heading = pigeon.getYaw();
+      heading %= 360;
+
+      if (heading < 0){
+        heading += 360;
+      }
+
+      return heading;
+    }
 
   public CommandBase DriveMethodCommand() {
     return runOnce(
@@ -204,6 +244,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
+    super.periodic();
+    m_Odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), getLeftEncoderDistance(), getRightEncoderDistance());
     // This method will be called once per scheduler run
 
     // Updates Robot Position and velocity
@@ -232,37 +275,38 @@ public class DriveSubsystem extends SubsystemBase {
     /*
      * This will update any values that have changed on the PID controllers
      */
-    if(p != kP){leftBaller.setP(p); kP = p; rightBaller.setP(p); kP = p;}
-    if(i != kI){leftBaller.setI(i); kI = i; rightBaller.setP(i); kI = i;}
-    if(d != kD){leftBaller.setP(d); kD = d; rightBaller.setP(d); kP = d;}
-    if(iz != kIZone){leftBaller.setP(iz); kIZone = iz; rightBaller.setP(iz); kIZone = iz;}
-    if ((min != kMinInput) || (max != kMaxOutput)){
+    if(p != kP){leftBaller.setP(p); kP = p; rightBaller.setP(p); kP = p;} // When p != kP
+    if(i != kI){leftBaller.setI(i); kI = i; rightBaller.setP(i); kI = i;} // When i != kI
+    if(d != kD){leftBaller.setP(d); kD = d; rightBaller.setP(d); kP = d;} // When d != kD
+    if(iz != kIZone){leftBaller.setP(iz); kIZone = iz; rightBaller.setP(iz); kIZone = iz;} // When iz != kIZone
+    if ((min != kMinOutput) || (max != kMaxOutput)){ // When max/min != kMin/KMax
       leftBaller.setOutputRange(min, max);
       rightBaller.setOutputRange(min, max);
-      kMinInput = min; kMaxOutput = max;
+      kMinOutput = min; kMaxOutput = max;
     }
 
     SmartDashboard.putNumber("Distance", distance);
-    
   }
 
-  /* 
-  public double getLeftEncoderA_Distance(Encoder kLeftMotorEncoder_A){
-    return kLeftMotorEncoder_A.getDistance();
+  public Pose2d getPose(){
+    return m_Odometry.getPoseMeters();
   }
 
-  public double getLeftEncoderB_Distance(Encoder kLeftMotorEncoder_B){
-    return kLeftMotorEncoder_B.getDistance();
+  public DifferentialDriveWheelSpeeds getWheelSpeeds(){
+    return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
   }
 
-  public double getRightEncoderA_Distance(Encoder kRightMotorEncoder_A){
-    return kRightMotorEncoder_A.getDistance();
+  public void resetOdometry(Pose2d pose){
+    leftEncoder.reset();
+    rightEncoder.reset();
+
+    m_Odometry.resetPosition(Rotation2d.fromDegrees(getPigeonHeading()), getLeftEncoderDistance(), getRightEncoderDistance(), pose);
   }
 
-  public double getRightEncoderB_Distance(Encoder kRightMotorEncoder_B){
-    return kRightMotorEncoder_B.getDistance();
+  public void resetPigeonHeading(){
+    pigeon.setYaw(0);
+    pigeon.setFusedHeading(0);
   }
-*/
 
   @Override
   public void simulationPeriodic() {
