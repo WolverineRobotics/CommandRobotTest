@@ -88,6 +88,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+    /* Facing directions */
     // If the bind is pressed that the user wants to face forward
     if(InputSystem.FaceForward()){
       m_robotContainer.TestFaceDirection(0);
@@ -124,24 +126,17 @@ public class Robot extends TimedRobot {
       m_robotContainer.NoTurnInput();
     }
 
-    if(InputSystem.Operator().getAButtonPressed()){
-      m_robotContainer.getPivot().enable();
-    }
-    if(InputSystem.Operator().getBButtonPressed()){
-        m_robotContainer.getPivot().setSetpoint(-35);
-    }
-    if(InputSystem.Operator().getStartButtonPressed()){
-        m_robotContainer.getPivot().setSetpoint(-10);
-    }
   
-    if(InputSystem.Operator().getYButtonPressed()){
+    if(InputSystem.Operator().getStartButtonPressed()){
+        m_robotContainer.getPivot().enable();
+    }
+    if(InputSystem.Operator().getBackButtonPressed()){
         m_robotContainer.getPivot().disable();
     }
     
-    
-    if(InputSystem.ToMidCube()){
-      m_robotContainer.StartMidCubeCommand();
-    }
+    if(InputSystem.ToMidCube()){ m_robotContainer.StartMidCubeCommand(); }
+    if(InputSystem.ToHighCube()){ m_robotContainer.StartHighCubeCommand(); }
+    if(InputSystem.ToIntakePos()){ m_robotContainer.StartIntakePosCommand(); }
 
     m_robotContainer.Balance(InputSystem.Balance());
 

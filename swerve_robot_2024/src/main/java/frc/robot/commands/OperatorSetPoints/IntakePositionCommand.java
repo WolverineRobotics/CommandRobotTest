@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 
-public class MidCubeCommand extends CommandBase {
+public class IntakePositionCommand extends CommandBase {
     private ElevatorSubsystem elevator;
     private PivotSubsystem pivot;
 
-    public MidCubeCommand(PivotSubsystem _pivot, ElevatorSubsystem _elevator){
+    public IntakePositionCommand(PivotSubsystem _pivot, ElevatorSubsystem _elevator){
         elevator = _elevator;
         pivot = _pivot;
 
@@ -18,8 +18,8 @@ public class MidCubeCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        pivot.setSetpoint(-50);
-        elevator.setSetpoint(-30);
+        pivot.setSetpoint(-25);
+        elevator.setSetpoint(-12);
     }
     
     @Override
