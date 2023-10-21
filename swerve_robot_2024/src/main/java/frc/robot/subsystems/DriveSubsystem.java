@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkMax.ControlType;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.PowerDistribution;
+
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
@@ -55,15 +56,13 @@ public class DriveSubsystem extends SubsystemBase {
     private CANSparkMax right_2;
 
     private double kP, kI, kD, kIZone, kMaxOutput, kMinOutput, setpoint, errorSum;
-    private double heading;
-    private double error;
 
     // Declaring motor groups
     private  MotorControllerGroup left_drive;
     private  MotorControllerGroup right_drive;
     
     // Declaring differential drive
-    private  DifferentialDrive drive;  
+    private  DifferentialDrive drive;
 
     private SparkMaxPIDController leftBaller;
     private SparkMaxPIDController rightBaller;
@@ -72,7 +71,9 @@ public class DriveSubsystem extends SubsystemBase {
     private Encoder leftEncoder, rightEncoder;
 
     private DifferentialDriveKinematics m_Kinematics;
-    
+
+    private double heading;
+    private double error;
 
     // The Pigeon
     private final PigeonIMU pigeon = new PigeonIMU(2);
@@ -137,7 +138,7 @@ public class DriveSubsystem extends SubsystemBase {
       right_2.follow(right_1, false);
 
       // Gain Values
-      kP = 1;
+      kP = 0.01;
       kI = 0;
       kD = 0;
       kIZone = 0;
@@ -166,6 +167,9 @@ public class DriveSubsystem extends SubsystemBase {
       kRightMotorEncoder_A.setPositionConversionFactor(39.37 / RobotMap.CYCLES_PER_INCH);
       kRightMotorEncoder_B.setPositionConversionFactor(39.37 / RobotMap.CYCLES_PER_INCH);
 
+      leftEncoder.setDistancePerPulse(1 / 545.29);
+      rightEncoder.setDistancePerPulse(1 / 545.29);
+
       // Since outputs from controllers are -1 -> 1
       leftBaller.setOutputRange(-1, 1);
       rightBaller.setOutputRange(-1, 1);
@@ -179,6 +183,13 @@ public class DriveSubsystem extends SubsystemBase {
 
       m_Odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()), getLeftEncoderDistance(), getRightEncoderDistance());
 
+  }
+
+  public void motorVoltages(double leftVoltage, double rightVoltage){
+    left_drive.setVoltage(leftVoltage); 
+    right_drive.setVoltage(rightVoltage);
+
+    drive.feed();
   }
 
   public double getLeftEncoderDistance(){
@@ -221,12 +232,24 @@ public class DriveSubsystem extends SubsystemBase {
   
   // moves the robot staight with the given speed
   public void MoveStraight(double speed){
-    drive.arcadeDrive(speed, 0);
+    error = pigeon.getYaw() - getPigeonHeading();
+    drive.arcadeDrive(speed + kP * error, -speed + kP * error);
+    // drive.arcadeDrive(speed, 0);
   }
 
   // moves the robot staight with the given speed
   public void SetDrive(double speed, double rot){
     drive.arcadeDrive(speed, rot);
+  }
+
+  public void pidDrive(double distance){
+    leftBaller.setReference(distance, CANSparkMax.ControlType.kPosition);
+    rightBaller.setReference(distance, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void turnToAngle(){
+    double error = 90 - pigeon.getYaw();
+    drive.arcadeDrive(kP * error, -kP * error);
   }
 
   public double Yaw(){
@@ -237,10 +260,6 @@ public class DriveSubsystem extends SubsystemBase {
     return pigeon.getPitch();
   }
 
-  public void pidDrive(double distance){
-    leftBaller.setReference(distance, CANSparkMax.ControlType.kPosition);
-    rightBaller.setReference(distance, CANSparkMax.ControlType.kPosition);
-  }
 
   @Override
   public void periodic() {
@@ -299,7 +318,6 @@ public class DriveSubsystem extends SubsystemBase {
   public void resetOdometry(Pose2d pose){
     leftEncoder.reset();
     rightEncoder.reset();
-
     m_Odometry.resetPosition(Rotation2d.fromDegrees(getPigeonHeading()), getLeftEncoderDistance(), getRightEncoderDistance(), pose);
   }
 
