@@ -23,7 +23,7 @@ public class RotateToCommand extends CommandBase {
     public RotateToCommand(DriveSubsystem subsystem, double _angle){
         m_Subsystem = subsystem;
         angle = _angle;
-        error = angle - m_Subsystem.Yaw();
+        error = angle - m_Subsystem.getPigeonHeading();
         addRequirements(subsystem);
     }
 
@@ -31,7 +31,7 @@ public class RotateToCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        if(m_Subsystem.Yaw() > angle){ dir = 1; }
+        if(m_Subsystem.getPigeonHeading() > angle){ dir = 1; }
         else{ dir = -1; }
 
     }
@@ -39,7 +39,7 @@ public class RotateToCommand extends CommandBase {
     @Override
     public void execute() {
         // Proportional Control
-        error = angle - m_Subsystem.Yaw();
+        error = angle - m_Subsystem.getPigeonHeading();
         speed = gain * -error;
 
         //Actual rotate fucntion

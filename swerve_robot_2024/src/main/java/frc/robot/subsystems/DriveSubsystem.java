@@ -200,7 +200,7 @@ public class DriveSubsystem extends SubsystemBase {
     return rightEncoder.getDistance();
   }
 
-  private double getPigeonHeading() {
+  public double getPigeonHeading() {
       double heading = pigeon.getYaw();
       heading %= 360;
 
@@ -248,13 +248,13 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void turnToAngle(){
-    double error = 90 - pigeon.getYaw();
+    double error = 90 - getPigeonHeading();
     drive.arcadeDrive(kP * error, -kP * error);
   }
 
-  public double Yaw(){
-    return pigeon.getYaw();
-  }
+  //public double Yaw(){
+  //  return pigeon.getYaw();
+  //}
 
   public double Pitch(){
     return pigeon.getPitch();
@@ -279,7 +279,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     //SmartDashboard.putNumberArray("Position", position);
     //SmartDashboard.putNumberArray("Velocity", velocity);
-    SmartDashboard.putNumber("Yaw", pigeon.getYaw());
+    SmartDashboard.putNumber("Yaw", getPigeonHeading());
     SmartDashboard.putNumber("Pitch", pigeon.getPitch());
     SmartDashboard.putNumber("Roll", pigeon.getRoll());
     
@@ -298,6 +298,7 @@ public class DriveSubsystem extends SubsystemBase {
     if(i != kI){leftBaller.setI(i); kI = i; rightBaller.setP(i); kI = i;} // When i != kI
     if(d != kD){leftBaller.setP(d); kD = d; rightBaller.setP(d); kP = d;} // When d != kD
     if(iz != kIZone){leftBaller.setP(iz); kIZone = iz; rightBaller.setP(iz); kIZone = iz;} // When iz != kIZone
+
     if ((min != kMinOutput) || (max != kMaxOutput)){ // When max/min != kMin/KMax
       leftBaller.setOutputRange(min, max);
       rightBaller.setOutputRange(min, max);
