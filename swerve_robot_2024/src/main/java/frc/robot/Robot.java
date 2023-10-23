@@ -90,49 +90,14 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     /* Facing directions */
-    // If the bind is pressed that the user wants to face forward
-    if(InputSystem.FaceForward()){
-      m_robotContainer.TestFaceDirection(0);
-    }
-    // If the bind is pressed that the user wants to face backwards
-    else if(InputSystem.FaceDriver()){
-      m_robotContainer.TestFaceDirection(180);
-    }
-    
-    // If the bind is pressed that the user wants to face left
-    else if(InputSystem.FaceLeft()){
-      
-      m_robotContainer.TestFaceDirection(90);
-      // finds wether clockwise or counter clockwise will work
-      //if(Math.abs(90 - m_robotContainer.GetDrive().Yaw()) <= Math.abs(-270 - m_robotContainer.GetDrive().Yaw())){
-      //  m_robotContainer.TestFaceDirection(90);
-      //}
-      //else{ m_robotContainer.TestFaceDirection(-270); }
-    }
-    
-    // If the bind is pressed that the user wants to face right
-    else if(InputSystem.FaceRight()){
-      m_robotContainer.TestFaceDirection(270);
-      
-      // finds wether clockwise or counter clockwise will work
-      //if(Math.abs(270 - m_robotContainer.GetDrive().Yaw()) <= Math.abs(-90 - m_robotContainer.GetDrive().Yaw())){
-      //    m_robotContainer.TestFaceDirection(270);
-      //   }
-      //  else{ m_robotContainer.TestFaceDirection(-90); }
-    }
-    
-    // When none of these requests are pressed
-    else{
-      m_robotContainer.NoTurnInput();
-    }
-
+    if(InputSystem.FaceForward()){ m_robotContainer.TestFaceDirection(0); }
+    else if(InputSystem.FaceDriver()){ m_robotContainer.TestFaceDirection(180); }
+    else if(InputSystem.FaceLeft()){ m_robotContainer.TestFaceDirection(90); }
+    else if(InputSystem.FaceRight()){ m_robotContainer.TestFaceDirection(270); }
+    else{ m_robotContainer.NoTurnInput(); }
   
-    if(InputSystem.Operator().getStartButtonPressed()){
-        m_robotContainer.getPivot().enable();
-    }
-    if(InputSystem.Operator().getBackButtonPressed()){
-        m_robotContainer.getPivot().disable();
-    }
+    if(InputSystem.Operator().getStartButtonPressed()){ m_robotContainer.getPivot().enable(); }
+    if(InputSystem.Operator().getBackButtonPressed()){ m_robotContainer.getPivot().disable(); }
     
     if(InputSystem.ToMidCube()){ m_robotContainer.StartMidCubeCommand(); }
     if(InputSystem.ToHighCube()){ m_robotContainer.StartHighCubeCommand(); }
