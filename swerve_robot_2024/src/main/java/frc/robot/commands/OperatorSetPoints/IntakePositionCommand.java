@@ -18,7 +18,11 @@ public class IntakePositionCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        pivot.setSetpoint(-25);
+
+        pivot.enable();
+        elevator.enable();
+
+        pivot.setSetpoint(-20);
         elevator.setSetpoint(-12);
     }
     

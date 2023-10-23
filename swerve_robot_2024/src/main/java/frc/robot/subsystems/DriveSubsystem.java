@@ -64,8 +64,8 @@ public class DriveSubsystem extends SubsystemBase {
     // Declaring differential drive
     private  DifferentialDrive drive;
 
-    private SparkMaxPIDController leftBaller;
-    private SparkMaxPIDController rightBaller;
+    //private SparkMaxPIDController leftBaller;
+    //private SparkMaxPIDController rightBaller;
 
     private DifferentialDriveOdometry m_Odometry;
     private Encoder leftEncoder, rightEncoder;
@@ -106,7 +106,7 @@ public class DriveSubsystem extends SubsystemBase {
 
       drive = new DifferentialDrive(left_drive, right_drive);
     
-      left_drive.setInverted(true);
+      //left_drive.setInverted(true);
 
       left_1.setIdleMode(IdleMode.kBrake);
       left_2.setIdleMode(IdleMode.kBrake);
@@ -122,8 +122,8 @@ public class DriveSubsystem extends SubsystemBase {
       /*
        * Get the PID Controllers for both masters (left_1, right_1)
        */
-      SparkMaxPIDController leftBaller =  left_1.getPIDController();
-      SparkMaxPIDController rightBaller = right_1.getPIDController();
+      //SparkMaxPIDController leftBaller =  left_1.getPIDController();
+      //SparkMaxPIDController rightBaller = right_1.getPIDController();
 
       // LEFT ENCODERS
       RelativeEncoder kLeftMotorEncoder_A = left_1.getEncoder(); // 5
@@ -145,17 +145,17 @@ public class DriveSubsystem extends SubsystemBase {
       kMaxOutput = 1;
       kMinOutput = -1;
       
-      leftBaller.setP(kP);
-      rightBaller.setP(kP);
-
-      leftBaller.setI(kI);
-      rightBaller.setI(kI);
-
-      leftBaller.setD(kD);
-      rightBaller.setD(kD);
-
-      leftBaller.setIZone(kIZone);
-      rightBaller.setIZone(kIZone);
+      //leftBaller.setP(kP);
+      //rightBaller.setP(kP);
+//
+      //leftBaller.setI(kI);
+      //rightBaller.setI(kI);
+//
+      //leftBaller.setD(kD);
+      //rightBaller.setD(kD);
+//
+      //leftBaller.setIZone(kIZone);
+      //rightBaller.setIZone(kIZone);
  
       /*
        * Ratio between one metre (in inches) to the cycles per inch
@@ -171,8 +171,8 @@ public class DriveSubsystem extends SubsystemBase {
       rightEncoder.setDistancePerPulse(1 / 545.29);
 
       // Since outputs from controllers are -1 -> 1
-      leftBaller.setOutputRange(-1, 1);
-      rightBaller.setOutputRange(-1, 1);
+      //leftBaller.setOutputRange(-1, 1);
+      //rightBaller.setOutputRange(-1, 1);
 
       SmartDashboard.putNumber("kP Gain", kP);
       SmartDashboard.putNumber("kI Gain", kI);
@@ -181,15 +181,15 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Min Output", kMinOutput);
       SmartDashboard.putNumber("Max Output", kMaxOutput);
 
-      m_Odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()), getLeftEncoderDistance(), getRightEncoderDistance());
+      //m_Odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()), getLeftEncoderDistance(), getRightEncoderDistance());
 
   }
 
   public void motorVoltages(double leftVoltage, double rightVoltage){
-    left_drive.setVoltage(leftVoltage); 
-    right_drive.setVoltage(rightVoltage);
-
-    drive.feed();
+    //left_drive.setVoltage(leftVoltage); 
+    //right_drive.setVoltage(rightVoltage);
+//
+    //drive.feed();
   }
 
   public double getLeftEncoderDistance(){
@@ -243,8 +243,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void pidDrive(double distance){
-    leftBaller.setReference(distance, CANSparkMax.ControlType.kPosition);
-    rightBaller.setReference(distance, CANSparkMax.ControlType.kPosition);
+    //leftBaller.setReference(distance, CANSparkMax.ControlType.kPosition);
+    //rightBaller.setReference(distance, CANSparkMax.ControlType.kPosition);
   }
 
   public void turnToAngle(){
@@ -265,7 +265,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     
     super.periodic();
-    m_Odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), getLeftEncoderDistance(), getRightEncoderDistance());
+    //m_Odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), getLeftEncoderDistance(), getRightEncoderDistance());
     // This method will be called once per scheduler run
 
     // Updates Robot Position and velocity
@@ -294,33 +294,33 @@ public class DriveSubsystem extends SubsystemBase {
     /*
      * This will update any values that have changed on the PID controllers
      */
-    if(p != kP){leftBaller.setP(p); kP = p; rightBaller.setP(p); kP = p;} // When p != kP
-    if(i != kI){leftBaller.setI(i); kI = i; rightBaller.setP(i); kI = i;} // When i != kI
-    if(d != kD){leftBaller.setP(d); kD = d; rightBaller.setP(d); kP = d;} // When d != kD
-    if(iz != kIZone){leftBaller.setP(iz); kIZone = iz; rightBaller.setP(iz); kIZone = iz;} // When iz != kIZone
-
-    if ((min != kMinOutput) || (max != kMaxOutput)){ // When max/min != kMin/KMax
-      leftBaller.setOutputRange(min, max);
-      rightBaller.setOutputRange(min, max);
-      kMinOutput = min; kMaxOutput = max;
-    }
+    //if(p != kP){leftBaller.setP(p); kP = p; rightBaller.setP(p); kP = p;} // When p != kP
+    //if(i != kI){leftBaller.setI(i); kI = i; rightBaller.setP(i); kI = i;} // When i != kI
+    //if(d != kD){leftBaller.setP(d); kD = d; rightBaller.setP(d); kP = d;} // When d != kD
+    //if(iz != kIZone){leftBaller.setP(iz); kIZone = iz; rightBaller.setP(iz); kIZone = iz;} // When iz != kIZone
+//
+    //if ((min != kMinOutput) || (max != kMaxOutput)){ // When max/min != kMin/KMax
+    //  leftBaller.setOutputRange(min, max);
+    //  rightBaller.setOutputRange(min, max);
+    //  kMinOutput = min; kMaxOutput = max;
+    //}
 
     SmartDashboard.putNumber("Distance", distance);
   }
 
-  public Pose2d getPose(){
-    return m_Odometry.getPoseMeters();
-  }
-
-  public DifferentialDriveWheelSpeeds getWheelSpeeds(){
-    return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
-  }
-
-  public void resetOdometry(Pose2d pose){
-    leftEncoder.reset();
-    rightEncoder.reset();
-    m_Odometry.resetPosition(Rotation2d.fromDegrees(getPigeonHeading()), getLeftEncoderDistance(), getRightEncoderDistance(), pose);
-  }
+  //public Pose2d getPose(){
+  //  return m_Odometry.getPoseMeters();
+  //}
+//
+  //public DifferentialDriveWheelSpeeds getWheelSpeeds(){
+  //  return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
+  //}
+//
+  //public void resetOdometry(Pose2d pose){
+  //  leftEncoder.reset();
+  //  rightEncoder.reset();
+  //  m_Odometry.resetPosition(Rotation2d.fromDegrees(getPigeonHeading()), getLeftEncoderDistance(), getRightEncoderDistance(), pose);
+  //}
 
   public void resetPigeonHeading(){
     pigeon.setYaw(0);

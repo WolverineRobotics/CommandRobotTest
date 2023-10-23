@@ -10,18 +10,18 @@ public class AutonomousCommand extends CommandBase {
 
     DriveSubsystem weBalling;
     public AutonomousCommand(DriveSubsystem subsystem){
-        weBalling = subsystem; // Initalize 'weBalling as a subsystem'
-        addRequirements(weBalling); // Subsystem Dependency
+        //weBalling = subsystem; // Initalize 'weBalling as a subsystem'
+        //addRequirements(weBalling); // Subsystem Dependency
     }
 
     @Override
     public void initialize(){
-        withTimeout(0.5);
+        //withTimeout(0.5);
     }
 
     @Override
     public void execute(){
-        weBalling.ArcadeDrive();
+        //weBalling.ArcadeDrive();
     }
 
     // Initialized when command stops

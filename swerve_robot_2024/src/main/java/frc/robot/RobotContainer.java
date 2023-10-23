@@ -77,6 +77,9 @@ public class RobotContainer {
   public PivotSubsystem getPivot(){
     return m_pivot;
   }
+  public ElevatorSubsystem getElevator(){
+    return m_elevator;
+  }
 
   public void NoTurnInput(){
     if(isTurning){

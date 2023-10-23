@@ -96,8 +96,8 @@ public class Robot extends TimedRobot {
     else if(InputSystem.FaceRight()){ m_robotContainer.TestFaceDirection(270); }
     else{ m_robotContainer.NoTurnInput(); }
   
-    if(InputSystem.Operator().getStartButtonPressed()){ m_robotContainer.getPivot().enable(); }
-    if(InputSystem.Operator().getBackButtonPressed()){ m_robotContainer.getPivot().disable(); }
+    if(InputSystem.Operator().getStartButtonPressed()){ m_robotContainer.getPivot().enable(); m_robotContainer.getElevator().enable(); }
+    if(InputSystem.Operator().getBackButtonPressed()){ m_robotContainer.getPivot().disable(); m_robotContainer.getElevator().disable();}
     
     if(InputSystem.ToMidCube()){ m_robotContainer.StartMidCubeCommand(); }
     if(InputSystem.ToHighCube()){ m_robotContainer.StartHighCubeCommand(); }

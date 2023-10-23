@@ -18,8 +18,12 @@ public class MidCubeCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        pivot.setSetpoint(-50);
-        elevator.setSetpoint(-30);
+
+        pivot.enable();
+        elevator.enable();
+
+        pivot.setSetpoint(-32);
+        elevator.setSetpoint(-35);
     }
     
     @Override

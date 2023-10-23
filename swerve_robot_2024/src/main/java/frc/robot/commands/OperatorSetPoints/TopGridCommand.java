@@ -18,8 +18,8 @@ public class TopGridCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        pivot.setSetpoint(-25);
-        elevator.setSetpoint(-47);
+        pivot.setSetpoint(-20);
+        elevator.setSetpoint(-45);
     }
     
     @Override

@@ -18,11 +18,10 @@ public class ElevatorSubsystem extends PIDSubsystem{
     private CANSparkMax m_motor_1, m_motor_2;
     private MotorControllerGroup m_motors;
     private RelativeEncoder encoder; 
-    private PIDController pid;
 
     public ElevatorSubsystem(){
 
-        super(new PIDController(0.1, 0, 0), 0);
+        super(new PIDController(0.04, 0, 0), 0);
         m_motor_1 = new CANSparkMax(OperatorConstants.kElevatorMotor1, MotorType.kBrushless);
         m_motor_2 = new CANSparkMax(OperatorConstants.kElevatorMotor2, MotorType.kBrushless);
         m_motors = new MotorControllerGroup(m_motor_1, m_motor_2);
@@ -30,7 +29,7 @@ public class ElevatorSubsystem extends PIDSubsystem{
         //encoder.setInverted(true);
         
         encoder.setPosition(0);
-        getController().setSetpoint(-1);
+        setSetpoint(-10);
         getController().setTolerance(1);
 
         setDefaultCommand(new DefaultElevatorCommand(this));
@@ -41,8 +40,11 @@ public class ElevatorSubsystem extends PIDSubsystem{
     @Override
     public void periodic(){
         SmartDashboard.putNumber("elevator_encoder", encoder.getPosition());
-        SmartDashboard.putNumber("elevator_error", getMeasurement());
-        SmartDashboard.putBoolean("enabled", isEnabled());        
+        SmartDashboard.putNumber("elevator_error", getController().getPositionError());
+        SmartDashboard.putBoolean("elevator_enabled", isEnabled());       
+        SmartDashboard.putNumber("elevator_setpoint", getSetpoint());
+
+        super.periodic();
     } 
     
     public void ManualControl(){
@@ -52,12 +54,14 @@ public class ElevatorSubsystem extends PIDSubsystem{
             m_motors.set(speed * 0.35);
             
         }
-        else {//if(!isEnabled()){
+        else if(!isEnabled()){
             m_motors.set(0);
         }
             
     } 
     protected void useOutput(double output, double setpoint){
+        SmartDashboard.putNumber("elevator_output", output);
+
         if(!getController().atSetpoint()){
             m_motors.set(output);
         }
