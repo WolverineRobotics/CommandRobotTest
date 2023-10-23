@@ -14,9 +14,12 @@ package frc.robot;
  */
 public final class Constants {
   public static class OperatorConstants {
+
+    /* Controller ports */
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 0;
-
+    
+    /* CAN ID constants */
     public static final int kPigeonId = 0;
     
     public static final int kLeftMotor1 = 1;
@@ -36,5 +39,13 @@ public final class Constants {
     
     public static final int kPivotMotor = 15;
     public static final int kIntakeMotor = 16;
+
+
+    /* Trapezoidal constraints */
+    public static final int kMaxElevatorVelocity = 50;
+    public static final int kMaxPivotVelocity = 50;
+
+    public static final int kMaxElevatorAcceleration = 30;
+    public static final int kMaxPivotAcceleration = 30;
   }
 }

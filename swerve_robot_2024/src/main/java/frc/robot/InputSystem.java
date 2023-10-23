@@ -24,11 +24,26 @@ public class InputSystem {
 
     public static double ManualElevator(){ return oController.getLeftY(); } 
     public static double ManualPivot(){ return oController.getRightY(); } 
-    public static double ManualIntake(){ return (oController.getLeftTriggerAxis()) + (oController.getRightTriggerAxis() * -1) * 0.5; } 
+    public static double ManualIntake(){ return ((oController.getLeftTriggerAxis() * 1) + (oController.getRightTriggerAxis() * -1) * 0.5); } 
 
     public static boolean ToMidCube(){ return oController.getXButtonPressed(); } 
     public static boolean ToHighCube(){ return oController.getYButtonPressed(); } 
     public static boolean ToIntakePos(){ return oController.getAButtonPressed(); } 
+    
+    public static boolean Retract(){ 
+        return
+        ( 
+            (
+                oController.getAButtonReleased() 
+                || oController.getYButtonReleased()
+                || oController.getXButtonReleased() 
+            ) && !(
+                oController.getAButton()
+                ||oController.getXButton()
+                ||oController.getYButton()
+                )
+        
+        ); } 
     
     public static boolean AutoPickup(){ return oController.getLeftBumper(); } 
     public static boolean AutoRetract(){ return oController.getRightBumper(); } 

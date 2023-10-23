@@ -5,15 +5,19 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InputSystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Elevator.DefaultElevatorCommand;
 
-public class ElevatorSubsystem extends PIDSubsystem{
+public class ElevatorSubsystem extends ProfiledPIDSubsystem{
     
     private CANSparkMax m_motor_1, m_motor_2;
     private MotorControllerGroup m_motors;
@@ -21,7 +25,12 @@ public class ElevatorSubsystem extends PIDSubsystem{
 
     public ElevatorSubsystem(){
 
-        super(new PIDController(0.04, 0, 0), 0);
+        super(
+            new ProfiledPIDController(0.04, 0, 0, 
+            new TrapezoidProfile.Constraints(OperatorConstants.kMaxElevatorVelocity,OperatorConstants.kMaxElevatorAcceleration)), 
+            0
+        );
+
         m_motor_1 = new CANSparkMax(OperatorConstants.kElevatorMotor1, MotorType.kBrushless);
         m_motor_2 = new CANSparkMax(OperatorConstants.kElevatorMotor2, MotorType.kBrushless);
         m_motors = new MotorControllerGroup(m_motor_1, m_motor_2);
@@ -29,7 +38,7 @@ public class ElevatorSubsystem extends PIDSubsystem{
         //encoder.setInverted(true);
         
         encoder.setPosition(0);
-        setSetpoint(-10);
+        setGoal(-10);
         getController().setTolerance(1);
 
         setDefaultCommand(new DefaultElevatorCommand(this));
@@ -42,7 +51,6 @@ public class ElevatorSubsystem extends PIDSubsystem{
         SmartDashboard.putNumber("elevator_encoder", encoder.getPosition());
         SmartDashboard.putNumber("elevator_error", getController().getPositionError());
         SmartDashboard.putBoolean("elevator_enabled", isEnabled());       
-        SmartDashboard.putNumber("elevator_setpoint", getSetpoint());
 
         super.periodic();
     } 
@@ -59,8 +67,10 @@ public class ElevatorSubsystem extends PIDSubsystem{
         }
             
     } 
-    protected void useOutput(double output, double setpoint){
+    protected void useOutput(double output, TrapezoidProfile.State setpoint){
         SmartDashboard.putNumber("elevator_output", output);
+        SmartDashboard.putNumber("elevator_setpoint", setpoint.position);
+
 
         if(!getController().atSetpoint()){
             m_motors.set(output);

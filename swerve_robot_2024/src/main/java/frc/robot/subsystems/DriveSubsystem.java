@@ -106,7 +106,7 @@ public class DriveSubsystem extends SubsystemBase {
 
       drive = new DifferentialDrive(left_drive, right_drive);
     
-      //left_drive.setInverted(true);
+      left_drive.setInverted(true); /* comment out if robot code doesnt activate */
 
       left_1.setIdleMode(IdleMode.kBrake);
       left_2.setIdleMode(IdleMode.kBrake);
@@ -134,8 +134,8 @@ public class DriveSubsystem extends SubsystemBase {
       RelativeEncoder kRightMotorEncoder_B = right_2.getEncoder(); // 8
 
 
-      left_2.follow(left_1, true);
-      right_2.follow(right_1, false);
+      //left_2.follow(left_1, true);
+      //right_2.follow(right_1, false);
 
       // Gain Values
       kP = 0.01;

@@ -5,35 +5,36 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InputSystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake.DefaultPivotCommand;
 
-public class PivotSubsystem extends PIDSubsystem{
+public class PivotSubsystem extends ProfiledPIDSubsystem{
     
     private CANSparkMax m_motor;// = new CANSparkMax(15, MotorType.kBrushless);
     private RelativeEncoder encoder;// = m_motor.getEncoder(); 
 
     public PivotSubsystem(){
-        super(new PIDController(0.1, 0, 0.0), 0);
+        super(new ProfiledPIDController(0.1, 0, 0.0,
+        new TrapezoidProfile.Constraints(OperatorConstants.kMaxPivotVelocity,OperatorConstants.kMaxPivotAcceleration)), 
+        0);
 
         m_motor = new CANSparkMax(OperatorConstants.kPivotMotor, MotorType.kBrushless);
         encoder = m_motor.getEncoder();
         //encoder.setInverted(true);
 
         encoder.setPosition(0);
-        setSetpoint(-10);
+        setGoal(-10);
         getController().setTolerance(1);
 
         setDefaultCommand(new DefaultPivotCommand(this));
-
-        
-
-
     }
 
     //public void OnStart(){
@@ -45,7 +46,7 @@ public class PivotSubsystem extends PIDSubsystem{
     public void periodic(){
         SmartDashboard.putNumber("pivot_encoder", encoder.getPosition());
         SmartDashboard.putNumber("pivot_error", getMeasurement());
-        SmartDashboard.putNumber("pivot setpoint", getSetpoint());
+        
         SmartDashboard.putBoolean("pivot_enabled", isEnabled());
         
 
@@ -71,8 +72,10 @@ public class PivotSubsystem extends PIDSubsystem{
         }
     } 
 
-    protected void useOutput(double output, double setpoint){
+    protected void useOutput(double output, TrapezoidProfile.State setpoint){
         SmartDashboard.putNumber("pivot_output", output);
+        SmartDashboard.putNumber("pivot setpoint", setpoint.position);
+
         if(!getController().atSetpoint()){
             m_motor.set(output);
         }

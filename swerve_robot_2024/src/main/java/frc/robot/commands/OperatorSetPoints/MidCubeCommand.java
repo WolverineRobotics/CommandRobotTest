@@ -22,8 +22,8 @@ public class MidCubeCommand extends CommandBase {
         pivot.enable();
         elevator.enable();
 
-        pivot.setSetpoint(-32);
-        elevator.setSetpoint(-35);
+        pivot.setGoal(-32);
+        elevator.setGoal(-35);
     }
     
     @Override
