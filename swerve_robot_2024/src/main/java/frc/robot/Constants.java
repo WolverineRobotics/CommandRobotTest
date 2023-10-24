@@ -47,8 +47,11 @@ public final class Constants {
 
     public static final int kMaxElevatorAcceleration = 300;
     public static final int kMaxPivotAcceleration = 300;
+<<<<<<< Updated upstream
 
     public static final int kMaxDriveVelocity = 300;
     public static final int kMaxDriveAcceleration = 300;
+=======
+>>>>>>> Stashed changes
   }
 }

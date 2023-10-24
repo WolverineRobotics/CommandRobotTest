@@ -23,7 +23,7 @@ public class LowDropCommand extends CommandBase {
         elevator.enable();
 
         pivot.setGoal(-55);
-        elevator.setGoal(-20);
+        elevator.setGoal(-27);
     }
     
     @Override

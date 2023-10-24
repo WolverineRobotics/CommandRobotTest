@@ -101,6 +101,8 @@ public class Robot extends TimedRobot {
     if(InputSystem.ToMidCube()){ m_robotContainer.StartMidCubeCommand(); }
     if(InputSystem.ToHighCube()){ m_robotContainer.StartHighCubeCommand(); }
     if(InputSystem.ToIntakePos()){ m_robotContainer.StartIntakePosCommand(); }
+    if(InputSystem.ToLowDrop()){ m_robotContainer.StartLowDropCommand(); }
+    if(InputSystem.Retract()){ m_robotContainer.StartRetractCommand(); }
 
     m_robotContainer.Balance(InputSystem.Balance());
 

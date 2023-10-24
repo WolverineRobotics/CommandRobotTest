@@ -19,7 +19,7 @@ public class TopGridCommand extends CommandBase {
     @Override
     public void initialize() {
         pivot.setGoal(-20);
-        elevator.setGoal(-45);
+        elevator.setGoal(-50);
     }
     
     @Override

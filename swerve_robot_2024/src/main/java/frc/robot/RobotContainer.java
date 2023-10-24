@@ -120,6 +120,7 @@ public class RobotContainer {
   public void StartHighCubeCommand(){ new TopGridCommand(m_pivot, m_elevator).schedule(); }
   public void StartIntakePosCommand(){ new IntakePositionCommand(m_pivot, m_elevator).schedule(); }
   public void StartLowDropCommand(){ new LowDropCommand(m_pivot, m_elevator).schedule(); }
+  public void StartRetractCommand(){ new RetractPositionCommand(m_pivot, m_elevator).schedule(); }
 
   public void TestFaceDirection(double direction){
     if(isTurning){

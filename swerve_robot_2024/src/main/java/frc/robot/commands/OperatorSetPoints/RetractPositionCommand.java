@@ -34,7 +34,7 @@ public class RetractPositionCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) { 
         
-        pivot.disable();
+        //pivot.disable();
 
         //if(!interrupted){
             //    CommandScheduler.getInstance().schedule(new DefaultPivotCommand(pivot));
