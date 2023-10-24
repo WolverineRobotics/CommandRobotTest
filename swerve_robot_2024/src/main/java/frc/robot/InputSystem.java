@@ -29,7 +29,8 @@ public class InputSystem {
     public static boolean ToMidCube(){ return oController.getXButtonPressed(); } 
     public static boolean ToHighCube(){ return oController.getYButtonPressed(); } 
     public static boolean ToIntakePos(){ return oController.getAButtonPressed(); } 
-    
+    public static boolean ToLowDrop(){ return oController.getBButtonPressed(); } 
+
     public static boolean Retract(){ 
         return
         ( 
@@ -37,10 +38,12 @@ public class InputSystem {
                 oController.getAButtonReleased() 
                 || oController.getYButtonReleased()
                 || oController.getXButtonReleased() 
+                || oController.getBButtonReleased() 
             ) && !(
                 oController.getAButton()
                 ||oController.getXButton()
                 ||oController.getYButton()
+                ||oController.getBButton()
                 )
         
         ); } 
