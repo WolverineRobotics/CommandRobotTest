@@ -123,13 +123,13 @@ public class RobotContainer {
   public void StartRetractCommand(){ new RetractPositionCommand(m_pivot, m_elevator).schedule(); }
 
   public void TestFaceDirection(double direction){
-    if(isTurning){
-      return;
-    }
-    else{
+    //if(isTurning){
+    //  return;
+    //}
+    //else{
       m_turnCommand = new RotateToCommand(m_drive, direction);
       m_turnCommand.schedule();
-    }
+    //}
     
   }
 

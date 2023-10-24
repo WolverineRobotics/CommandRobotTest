@@ -31,31 +31,34 @@ public class RotateToCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        if(m_Subsystem.getPigeonHeading() > angle){ dir = 1; }
-        else{ dir = -1; }
+        //if(m_Subsystem.getPigeonHeading() > angle){ dir = 1; }
+        //else{ dir = -1; }
+
+        m_Subsystem.enable();
+        m_Subsystem.setGoal(angle);
 
     }
     
     @Override
     public void execute() {
         // Proportional Control
-        error = angle - m_Subsystem.getPigeonHeading();
-        speed = gain * -error;
-
-        //Actual rotate fucntion
-        
-        if(error < deadzone && error > -deadzone){
-        //if(error > -deadzone){//error < deadzone && error > -deadzone){
-            fini = true;
-            m_Subsystem.Rotate(0);
-        }
-        else{
-
-            m_Subsystem.Rotate(speed);
-        }
-
-        SmartDashboard.putNumber("ERROR", error);
-        SmartDashboard.putNumber("Speed", speed);
+        //error = angle - m_Subsystem.getPigeonHeading();
+        //speed = gain * -error;
+//
+        ////Actual rotate fucntion
+        //
+        //if(error < deadzone && error > -deadzone){
+        ////if(error > -deadzone){//error < deadzone && error > -deadzone){
+        //    fini = true;
+        //    m_Subsystem.Rotate(0);
+        //}
+        //else{
+//
+        //    m_Subsystem.Rotate(speed);
+        //}
+//
+        //SmartDashboard.putNumber("ERROR", error);
+        //SmartDashboard.putNumber("Speed", speed);
     
     }
 
@@ -70,7 +73,16 @@ public class RotateToCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-      return fini;
+
+        boolean finished = (
+            m_Subsystem.getController().atGoal() 
+            && m_Subsystem.getController().atSetpoint());
+        
+            if(finished){
+                m_Subsystem.disable();
+            }
+
+            return finished;
     }
 
 
