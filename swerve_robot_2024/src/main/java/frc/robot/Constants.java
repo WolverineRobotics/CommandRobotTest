@@ -47,5 +47,8 @@ public final class Constants {
 
     public static final int kMaxElevatorAcceleration = 30;
     public static final int kMaxPivotAcceleration = 30;
+
+    public static final int kMaxDriveAcceleration = 20;
+    public static final int kMaxDriveVelocity = 10;
   }
 }
