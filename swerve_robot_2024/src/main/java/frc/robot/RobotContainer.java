@@ -6,10 +6,13 @@ package frc.robot;
 
 import frc.robot.commands.Drive.AutoBalance;
 import frc.robot.commands.Drive.DefaultDriveCommand;
+import frc.robot.commands.Drive.ForwardDriveCommand;
 import frc.robot.commands.Drive.RotateToCommand;
+import frc.robot.commands.Intake.RunIntakeCommand;
 import frc.robot.commands.OperatorSetPoints.IntakePositionCommand;
 import frc.robot.commands.OperatorSetPoints.LowDropCommand;
 import frc.robot.commands.OperatorSetPoints.MidCubeCommand;
+import frc.robot.commands.OperatorSetPoints.RetractPositionCommand;
 import frc.robot.commands.OperatorSetPoints.TopGridCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -17,6 +20,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -39,16 +43,68 @@ public class RobotContainer {
 
   private boolean isTurning = false;
   private boolean isBalancing = false;
+
   
   private double side = 0;//SmartDashboard.getNumber("Side", 0); // 0 for blue, 1 for red
   private double start_pos= 0;//SmartDashboard.getNumber("StartingPos", 0); // 0: leftmost, 1: center, 2: rightmost
 
+
+  /* Auto Commands
+   * UNFINISHED, WILL BE POLISHED LATER, JUST A CONCEPT
+   */
   //private AutoCommand autoWeBall = new AutoCommand(weBalling);
+
+  public Command getAutonomousCommand() {
+    // ----------------------------------------IMPORTANT---------------------------------
+    // THIS IS WHERE YOU DETERMING THE COMMAND YOU WANT TO DO IN AUTO. RETURN NULL FOR NONE
+    return Top_balance_auto;
+  }
+
+
+  public SequentialCommandGroup Top_balance_auto = new SequentialCommandGroup(
+    new TopGridCommand(m_pivot, m_elevator),
+    new RunIntakeCommand(m_intake, 0.75),
+    new RetractPositionCommand(m_pivot, m_elevator),
+    new ForwardDriveCommand(m_drive, 0.6, 3000),
+    new ForwardDriveCommand(m_drive, 0, 500),
+    new ForwardDriveCommand(m_drive, -0.75, 1000),
+    new AutoBalance(m_drive)
+  );
+  public SequentialCommandGroup mid_balance_auto = new SequentialCommandGroup(
+    new MidCubeCommand(m_pivot, m_elevator),
+    new RunIntakeCommand(m_intake, 0.75),
+    new RetractPositionCommand(m_pivot, m_elevator),
+    new ForwardDriveCommand(m_drive, 0.6, 3000),
+    new ForwardDriveCommand(m_drive, 0, 500),
+    new ForwardDriveCommand(m_drive, -0.75, 1000),
+    new AutoBalance(m_drive)
+  );
+  public SequentialCommandGroup side_top_mobility_auto = new SequentialCommandGroup(
+    new TopGridCommand(m_pivot, m_elevator),
+    new RunIntakeCommand(m_intake, 0.75),
+    new RetractPositionCommand(m_pivot, m_elevator),
+    new ForwardDriveCommand(m_drive, 0.5, 2500)
+  );
+  public SequentialCommandGroup side_mid_mobility_auto = new SequentialCommandGroup(
+    new MidCubeCommand(m_pivot, m_elevator),
+    new RunIntakeCommand(m_intake, 0.75),
+    new RetractPositionCommand(m_pivot, m_elevator),
+    new ForwardDriveCommand(m_drive, 0.5, 2500)
+  );
+  public SequentialCommandGroup side_top_auto = new SequentialCommandGroup(
+    new TopGridCommand(m_pivot, m_elevator),
+    new RunIntakeCommand(m_intake, 0.75),
+    new RetractPositionCommand(m_pivot, m_elevator)
+  );
+  public SequentialCommandGroup side_mid_auto = new SequentialCommandGroup(
+    new MidCubeCommand(m_pivot, m_elevator),
+    new RunIntakeCommand(m_intake, 0.75),
+    new RetractPositionCommand(m_pivot, m_elevator)
+  );
   
   public DriveSubsystem GetDrive(){ 
     return m_drive;
   }
-  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -107,8 +163,6 @@ public class RobotContainer {
     }
   }
 
-  //public Command getAutonomousCommand() {
-  //  // WE BALL
-  //  return autoWeBall;
-  //}
+
+
 }

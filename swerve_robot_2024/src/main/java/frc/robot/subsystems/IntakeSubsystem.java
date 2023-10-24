@@ -20,5 +20,9 @@ public class IntakeSubsystem extends SubsystemBase {
     public void ManualControl(){
         motor.set(InputSystem.ManualIntake());
     }
+
+    public void Run(double speed){
+        motor.set(speed);
+    }
     
 }

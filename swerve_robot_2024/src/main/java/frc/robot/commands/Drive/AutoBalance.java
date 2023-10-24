@@ -9,7 +9,7 @@ public class AutoBalance extends CommandBase{
 
     private double offset = -5;
     private double balanced_range = 2.5;
-    private double speed = 0.275;
+    private double speed = 0.275;//, target;
 
     private boolean fini = false;
 
@@ -19,7 +19,9 @@ public class AutoBalance extends CommandBase{
     }
 
     @Override
-    public void initialize(){}
+    public void initialize(){
+        //target = m_subsystem.getPigeonHeading();
+    }
 
 
     @Override

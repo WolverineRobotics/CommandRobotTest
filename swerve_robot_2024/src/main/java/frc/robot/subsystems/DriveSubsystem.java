@@ -231,9 +231,13 @@ public class DriveSubsystem extends SubsystemBase {
   }
   
   // moves the robot staight with the given speed
-  public void MoveStraight(double speed){
-    error = pigeon.getYaw() - getPigeonHeading();
+  public void MoveStraightPropotionate(double speed, double target){
+    error =  target - getPigeonHeading();
     drive.arcadeDrive(speed + kP * error, -speed + kP * error);
+    // drive.arcadeDrive(speed, 0);
+  }
+  public void MoveStraight(double speed){
+    drive.arcadeDrive(speed, 0);
     // drive.arcadeDrive(speed, 0);
   }
 
