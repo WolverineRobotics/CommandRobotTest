@@ -42,13 +42,13 @@ public final class Constants {
 
 
     /* Trapezoidal constraints */
-    public static final int kMaxElevatorVelocity = 50;
-    public static final int kMaxPivotVelocity = 50;
+    public static final int kMaxElevatorVelocity = 125;
+    public static final int kMaxPivotVelocity = 160;
 
-    public static final int kMaxElevatorAcceleration = 30;
-    public static final int kMaxPivotAcceleration = 30;
+    public static final int kMaxElevatorAcceleration = 300;
+    public static final int kMaxPivotAcceleration = 300;
 
-    public static final int kMaxDriveAcceleration = 20;
-    public static final int kMaxDriveVelocity = 10;
+    public static final int kMaxDriveVelocity = 300;
+    public static final int kMaxDriveAcceleration = 300;
   }
 }
