@@ -142,10 +142,11 @@ public class RobotContainer {
 
   public void NoTurnInput(){
     if(isTurning){
-      m_turnCommand.EndCall();
-      m_drive.Rotate(0);
       //m_turnCommand.cancel();
-      isTurning = false;
+      //m_turnCommand.EndCall();
+      //m_drive.Rotate(0);
+      //m_turnCommand.cancel();
+      //isTurning = false;
     }
   }
 
