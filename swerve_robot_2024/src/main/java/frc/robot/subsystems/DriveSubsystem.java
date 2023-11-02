@@ -51,7 +51,7 @@ public class DriveSubsystem extends ProfiledPIDSubsystem{
     public DriveSubsystem(){
 
         super(
-            new ProfiledPIDController(0.01, 0, 0.0,
+            new ProfiledPIDController(0.03, 0.0, 0.0,
             new TrapezoidProfile.Constraints(
                 OperatorConstants.kMaxDriveVelocity,
                 OperatorConstants.kMaxDriveAcceleration)));
@@ -87,6 +87,10 @@ public class DriveSubsystem extends ProfiledPIDSubsystem{
         left_2.setIdleMode(IdleMode.kBrake);
         right_1.setIdleMode(IdleMode.kBrake);
         right_2.setIdleMode(IdleMode.kBrake);
+
+        disable();
+
+        getController().setTolerance(1.5, 0);
 
         setDefaultCommand(new DefaultDriveCommand(this));
 
@@ -135,14 +139,23 @@ public class DriveSubsystem extends ProfiledPIDSubsystem{
     drive.arcadeDrive(speed, rot);
   }
 
-  public void turnToAngle(){
-    double error = 90 - getPigeonHeading();
-    drive.arcadeDrive(kP * error, -kP * error);
+  public void setYawToHeading(){
+    pigeon.setYaw(getPigeonHeading());
   }
+
+  //public void turnToAngle(){
+    //double error = 90 - getPigeonHeading();
+    //drive.arcadeDrive(kP * error, -kP * error);
+  //}
 
     @Override
     protected void useOutput(double output, edu.wpi.first.math.trajectory.TrapezoidProfile.State setpoint) {
-        
+      if(!getController().atGoal()){
+        drive.arcadeDrive(0, -output);
+      }
+      else{
+        drive.arcadeDrive(0, 0);
+      }
         
     }
 
@@ -152,7 +165,7 @@ public class DriveSubsystem extends ProfiledPIDSubsystem{
     
     @Override
     protected double getMeasurement() {
-        return getPigeonHeading();
+        return pigeon.getYaw();
     }
 
     public double getPigeonHeading() {

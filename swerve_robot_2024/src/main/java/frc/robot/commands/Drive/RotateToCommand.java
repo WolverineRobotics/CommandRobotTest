@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.Subscriber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.InputSystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class RotateToCommand extends CommandBase {
@@ -23,7 +24,7 @@ public class RotateToCommand extends CommandBase {
     public RotateToCommand(DriveSubsystem subsystem, double _angle){
         m_Subsystem = subsystem;
         angle = _angle;
-        error = angle - m_Subsystem.getPigeonHeading();
+        //error = angle - m_Subsystem.getPigeonHeading();
         addRequirements(subsystem);
     }
 
@@ -35,6 +36,7 @@ public class RotateToCommand extends CommandBase {
         //else{ dir = -1; }
 
         m_Subsystem.enable();
+        m_Subsystem.setYawToHeading();
         m_Subsystem.setGoal(angle);
 
     }
@@ -68,7 +70,9 @@ public class RotateToCommand extends CommandBase {
     
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        m_Subsystem.disable();
+    }
     
     // Returns true when the command should end.
     @Override
@@ -78,13 +82,11 @@ public class RotateToCommand extends CommandBase {
             m_Subsystem.getController().atGoal() 
             && m_Subsystem.getController().atSetpoint());
         
-            if(finished){
-                m_Subsystem.disable();
-            }
 
-            return finished;
+            return InputSystem.Driver().getStartButtonPressed() || finished;
+
+
+        //return false;
+        
     }
-
-
-    
 }
