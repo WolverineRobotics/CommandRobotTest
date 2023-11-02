@@ -57,9 +57,15 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // ----------------------------------------IMPORTANT---------------------------------
     // THIS IS WHERE YOU DETERMING THE COMMAND YOU WANT TO DO IN AUTO. RETURN NULL FOR NONE
-    return Top_balance_auto;
+    return test_auto;
   }
 
+
+  public SequentialCommandGroup test_auto = new SequentialCommandGroup(
+    new ForwardDriveCommand(m_drive, 0.4, 1000),
+    new ForwardDriveCommand(m_drive, -0.2, 1000),
+    new AutoBalance(m_drive)
+  );
 
   public SequentialCommandGroup Top_balance_auto = new SequentialCommandGroup(
     new TopGridCommand(m_pivot, m_elevator),

@@ -19,25 +19,24 @@ public class ForwardDriveCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        target = m_Subsystem.getPigeonHeading();
+        //target = m_Subsystem.getPigeonHeading();
     }
     
     @Override
     public void execute() {
-        m_Subsystem.MoveStraightPropotionate(speed, target);
+        m_Subsystem.MoveStraight(speed);
         time -= 20;
     }
 
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        m_Subsystem.MoveStraight(0);
+    }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if(time <= 0){
-            m_Subsystem.MoveStraightPropotionate(0, target);
-        }
       return (time <= 0);
     }
 }
