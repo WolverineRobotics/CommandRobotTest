@@ -23,7 +23,7 @@ public class IntakePositionCommand extends CommandBase {
         elevator.enable();
 
         pivot.setGoal(-20);
-        elevator.setGoal(-12);
+        elevator.setGoal(-17);
     }
     
     @Override
@@ -33,6 +33,6 @@ public class IntakePositionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return (pivot.getController().atSetpoint() && elevator.getController().atSetpoint());
+        return (pivot.getController().atGoal() && elevator.getController().atGoal());
     }   
 }

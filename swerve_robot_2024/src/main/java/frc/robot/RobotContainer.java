@@ -57,16 +57,18 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // ----------------------------------------IMPORTANT---------------------------------
     // THIS IS WHERE YOU DETERMING THE COMMAND YOU WANT TO DO IN AUTO. RETURN NULL FOR NONE
-    return test_auto;
+    SequentialCommandGroup selected_commandGroup = test_auto;
+    return selected_commandGroup;
   }
 
-
+  // Put anything here to test
   public SequentialCommandGroup test_auto = new SequentialCommandGroup(
-    new ForwardDriveCommand(m_drive, 0.4, 1000),
+    new ForwardDriveCommand(m_drive, 0.4, 1000), 
     new ForwardDriveCommand(m_drive, -0.2, 1000),
     new AutoBalance(m_drive)
-  );
-
+    );
+    
+  // ----------------------- DEFINED AUTOS TO USE IN getAutonomousCommand() ------------------------------
   public SequentialCommandGroup Top_balance_auto = new SequentialCommandGroup(
     new TopGridCommand(m_pivot, m_elevator),
     new RunIntakeCommand(m_intake, 0.75),
@@ -114,23 +116,22 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-   // CommandScheduler.getInstance().setDefaultCommand(m_drive, new DefaultDriveCommand(m_drive));    
   }
 
   public void UpdateConfig(){
-    //side = SmartDashboard.getNumber("Side", 0); // 0 for blue, 1 for red
-    //start_pos= SmartDashboard.getNumber("StartingPos", 0); // 0: leftmost, 1: center, 2: rightmost
   }
 
+  // Methods for starting new commands once called
   public void StartMidCubeCommand(){ new MidCubeCommand(m_pivot, m_elevator).schedule(); }
   public void StartHighCubeCommand(){ new TopGridCommand(m_pivot, m_elevator).schedule(); }
   public void StartIntakePosCommand(){ new IntakePositionCommand(m_pivot, m_elevator).schedule(); }
   public void StartLowDropCommand(){ new LowDropCommand(m_pivot, m_elevator).schedule(); }
   public void StartRetractCommand(){ new RetractPositionCommand(m_pivot, m_elevator).schedule(); }
-
+  
+  // Starts new rotate to command once turning is false
   public void TestFaceDirection(double direction){
     if(isTurning){
-     return;
+      return;
     }
     else{
       m_turnCommand = new RotateToCommand(m_drive, direction);
@@ -138,7 +139,8 @@ public class RobotContainer {
     }
     
   }
-
+  
+  // Accessing subsystems
   public PivotSubsystem getPivot(){
     return m_pivot;
   }
@@ -147,13 +149,13 @@ public class RobotContainer {
   }
 
   public void NoTurnInput(){
-    if(isTurning){
-      //m_turnCommand.cancel();
-      //m_turnCommand.EndCall();
-      //m_drive.Rotate(0);
-      //m_turnCommand.cancel();
-      //isTurning = false;
-    }
+    //if(isTurning){
+    //  m_turnCommand.cancel();
+    //  m_turnCommand.EndCall();
+    //  m_drive.Rotate(0);
+    //  m_turnCommand.cancel();
+    //  isTurning = false;
+    //}
   }
 
   public void Balance(boolean _balance){
@@ -170,7 +172,4 @@ public class RobotContainer {
       m_balanceCommand.schedule();
     }
   }
-
-
-
 }

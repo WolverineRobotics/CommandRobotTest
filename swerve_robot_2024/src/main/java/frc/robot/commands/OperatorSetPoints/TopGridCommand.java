@@ -29,6 +29,6 @@ public class TopGridCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return (pivot.getController().atSetpoint() && elevator.getController().atSetpoint());
+        return (pivot.getController().atGoal() && elevator.getController().atGoal());
     }   
 }

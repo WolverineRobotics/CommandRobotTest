@@ -85,7 +85,9 @@ public class Robot extends TimedRobot {
     }
   }
 
-  /** This function is called periodically during operator control. */
+  /** This function is called periodically during operator control. 
+   * User input is tested here, and calls functions in the robot container to communicate with subsystems 
+  */
   @Override
   public void teleopPeriodic() {
 
@@ -96,20 +98,20 @@ public class Robot extends TimedRobot {
     else if(InputSystem.FaceRight()){ m_robotContainer.TestFaceDirection(270); }
     else{ m_robotContainer.NoTurnInput(); }
   
+    // Enable or disable PID's for operator subsystems
     if(InputSystem.Operator().getStartButtonPressed()){ m_robotContainer.getPivot().enable(); m_robotContainer.getElevator().enable(); }
     if(InputSystem.Operator().getBackButtonPressed()){ m_robotContainer.getPivot().disable(); m_robotContainer.getElevator().disable();}
     
+    // Gets operator input and starts PID commands for pivot and elevator
     if(InputSystem.ToMidCube()){ m_robotContainer.StartMidCubeCommand(); }
     if(InputSystem.ToHighCube()){ m_robotContainer.StartHighCubeCommand(); }
     if(InputSystem.ToIntakePos()){ m_robotContainer.StartIntakePosCommand(); }
     if(InputSystem.ToLowDrop()){ m_robotContainer.StartLowDropCommand(); }
     if(InputSystem.Retract()){ m_robotContainer.StartRetractCommand(); }
-
+    
+    // Starts the autobalancer on driver's input
+    // Can be cancelled with back button on driver controller
     m_robotContainer.Balance(InputSystem.Balance());
-
-    if(InputSystem.Driver().getBackButtonPressed()){
-      //CommandScheduler.getInstance().schedule(new ForwardDriveCommand(m_robotContainer.GetDrive(), -0.4, 1000));
-    }
 
   }
 

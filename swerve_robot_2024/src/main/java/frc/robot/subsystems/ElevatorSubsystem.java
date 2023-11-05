@@ -39,7 +39,7 @@ public class ElevatorSubsystem extends ProfiledPIDSubsystem{
         
         encoder.setPosition(0);
         setGoal(-10);
-        getController().setTolerance(1);
+        getController().setTolerance(2);
 
         setDefaultCommand(new DefaultElevatorCommand(this));
 

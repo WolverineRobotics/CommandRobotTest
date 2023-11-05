@@ -1,6 +1,7 @@
 package frc.robot.commands.Drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.InputSystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class AutoBalance extends CommandBase{
@@ -41,7 +42,7 @@ public class AutoBalance extends CommandBase{
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-      return fini;
+      return InputSystem.Driver().getBackButtonPressed();
     }
     
 }

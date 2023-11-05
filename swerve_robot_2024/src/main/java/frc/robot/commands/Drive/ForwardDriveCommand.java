@@ -9,8 +9,10 @@ public class ForwardDriveCommand extends CommandBase {
 
     private DriveSubsystem m_Subsystem;
     private double speed, time, target;
-
-    public ForwardDriveCommand(DriveSubsystem subsystem, double _speed, double _time){
+    
+    // SPEED VALUES ABOVE 0 DRIVE IN THE DIRECTION OF THE NO PARKING SIGN
+    // NEGATIVE SPEED VALUES DRIVE TOWARDS THE BATTERY SIDE
+    public ForwardDriveCommand(DriveSubsystem subsystem, double _speed, double _time){  
         m_Subsystem = subsystem;
         addRequirements(subsystem);
         speed = _speed;
